@@ -4,6 +4,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Note from '../Note'
 import TodoList from "../TodoList";
 import Icon from 'react-native-vector-icons/Ionicons'
+import Memo from '../Memo'
   
 const Tab = createBottomTabNavigator();
   
@@ -27,7 +28,8 @@ export default function Main() {
                   return <Icon name={name} style={[styles.iconStyle,{color}]}></Icon>;
                 },
             })}
-        >
+        >   
+            <Tab.Screen name="Memo" component={Memo} options={{tabBarLabel:'密码'}} />
             <Tab.Screen name="Note" component={Note} options={{tabBarLabel:'笔记'}} />
             <Tab.Screen name="TodoList" component={TodoList} options={{tabBarLabel:'待办'}} />
         </Tab.Navigator>
