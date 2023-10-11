@@ -19,7 +19,7 @@ function NoteHeader(){
         style={styles.header}
       >
         <View>
-          <Text>this is note header</Text>
+          <Text>this is note header66</Text>
         </View>
       </View>
     )
