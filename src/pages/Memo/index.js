@@ -12,24 +12,49 @@ import Header from "./Header"
 import RecordItem from "./RecordItem"
 import AddButton from "./AddButton"
 import ClassifyModal from "./ClassifyModal"
+import { NavigationContainer} from '@react-navigation/native'
+import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import AddRecord from "../AddRecord"
 
-function ListHeader(){
+const MemoStack = createNativeStackNavigator()
+
+
+const routes = [
+    {
+      name:'Memo',
+      component:Memo,
+      options:{
+        headerShown:false
+      }
+    },
+    {
+      name:'AddRecord',
+      component:AddRecord,
+      options:{
+        // title: 'Home',
+        // headerTitleAlign:'center'
+        headerShown:false,
+      }
+    },
+]
+export default function MemoRoot(){
     return (
-        <View
-            style={{
-                marginHorizontal:12,
-                marginTop:12,
-            }}
+        // <NavigationContainer>
+            <MemoStack.Navigator
+                initialRouteName="AddRecord"
             >
-            <TextInput
-                style={{
-                    backgroundColor:'#fff',
-                    borderRadius:6,
-                    paddingHorizontal:10,
-                }}
-                placeholder="搜索记录"
-            ></TextInput>
-        </View>
+                {
+                    routes.map(route=>(
+                    <MemoStack.Screen 
+                        name={route.name}
+                        component={route.component}
+                        options={route.options}
+                        key={route.name}
+                    />
+                    ))
+                }
+            </MemoStack.Navigator>
+        // </NavigationContainer>
     )
 }
 
@@ -76,4 +101,22 @@ function Memo(){
 }
 
 
-export default Memo
+function ListHeader(){
+    return (
+        <View
+            style={{
+                marginHorizontal:12,
+                marginTop:12,
+            }}
+            >
+            <TextInput
+                style={{
+                    backgroundColor:'#fff',
+                    borderRadius:6,
+                    paddingHorizontal:10,
+                }}
+                placeholder="搜索记录"
+            ></TextInput>
+        </View>
+    )
+}
