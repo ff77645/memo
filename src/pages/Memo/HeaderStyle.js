@@ -9,7 +9,8 @@ export default StyleSheet.create({
         flexWrap:'nowrap',
         alignItems:'center',
         justifyContent:'space-between',
-        padding:12,
+        paddingHorizontal:12,
+        paddingVertical:6,
     },
     classifyWrap:{
         display:'flex',
@@ -17,5 +18,5 @@ export default StyleSheet.create({
         flexWrap:'nowrap',
         alignItems:'center',
         gap:5,
-    }
+    },
 })
