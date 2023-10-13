@@ -12,7 +12,6 @@ import Header from "./Header"
 import RecordItem from "./RecordItem"
 import AddButton from "./AddButton"
 import ClassifyModal from "./ClassifyModal"
-import { NavigationContainer} from '@react-navigation/native'
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import AddRecord from "../AddRecord"
 
@@ -39,29 +38,30 @@ const routes = [
 ]
 export default function MemoRoot(){
     return (
-        // <NavigationContainer>
-            <MemoStack.Navigator
-                initialRouteName="AddRecord"
-            >
-                {
-                    routes.map(route=>(
-                    <MemoStack.Screen 
-                        name={route.name}
-                        component={route.component}
-                        options={route.options}
-                        key={route.name}
-                    />
-                    ))
-                }
-            </MemoStack.Navigator>
-        // </NavigationContainer>
+        <MemoStack.Navigator
+            initialRouteName="Memo"
+        >
+            {
+                routes.map(route=>(
+                <MemoStack.Screen 
+                    name={route.name}
+                    component={route.component}
+                    options={route.options}
+                    key={route.name}
+                />
+                ))
+            }
+        </MemoStack.Navigator>
     )
 }
 
-function Memo(){
+function Memo({navigation}){
 
     const recordList = Array.from({length:20})
     const [showCategray,setShowCategray] = useState(false)
+    const navToAddRecord = ()=>{
+        navigation.navigate('AddRecord')
+    }
     return (
         <View
             style={{
@@ -88,7 +88,7 @@ function Memo(){
                     renderItem={()=><RecordItem/>}
                 >
                 </FlatList>
-                {!showCategray && <AddButton></AddButton>}
+                {!showCategray && <AddButton onPress={navToAddRecord}></AddButton>}
                 { showCategray && <ClassifyModal onClose={
                     ()=>{
                         setShowCategray(false)
