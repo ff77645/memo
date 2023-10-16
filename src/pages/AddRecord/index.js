@@ -8,16 +8,17 @@ import {
     TouchableWithoutFeedback,
     Modal,
 } from 'react-native'
-import { ButtonGroup,CheckBox } from '@rneui/themed'
+import { CheckBox } from '@rneui/themed'
 import Icon from 'react-native-vector-icons/Ionicons'
 import {
     Select,
+    FormItem,
 } from '../../components/Form'
+import Header from "./Header";
 
-console.log({Select});
 
 export default function AddRecord({navigation}){
-
+    const [isEdit,setIsEdit] = useState(false)
     const handleBack =()=>{
         navigation.goBack()
     }
@@ -26,20 +27,33 @@ export default function AddRecord({navigation}){
     const [password,setPassword] = useState('')
     const [level,setLevel] = useState(1)
     const [remark,setRemark] = useState('')
-
+    const categrayOptions = [
+        {
+            label:'类别一',
+            value:'1',
+        },
+        {
+            label:'类别二',
+            value:'2',
+        },
+    ]
     return (
         <View>
-            <Header onBack={handleBack}></Header>
+            <Header isEdit={isEdit} onBack={handleBack}></Header>
             <ScrollView
                 style={{
                     padding:12,
                 }}
             >
-                <FormSelectItem 
+                <FormItem
                     label="分类"
-                    value={categray}
-                    onChange={setCategray}
-                ></FormSelectItem>
+                >
+                    <Select
+                        options={categrayOptions}
+                        onChange={setCategray}
+                        value={categray}
+                    ></Select>
+                </FormItem>
                 <FormInputItem 
                     label="账号"
                     value={acount}
@@ -64,6 +78,8 @@ export default function AddRecord({navigation}){
         </View>
     )
 }
+
+
 function FormButtonGrounpItem(props){
     const box = [
         {
@@ -109,60 +125,8 @@ function FormButtonGrounpItem(props){
         </FormItem>
     )
 }
-function FormSelectItem(props){
-
-    const [location,setLocation] = useState({
-        x:0,
-        y:0,
-        width:0,
-        height:0,    
-    })
-    const [showOptions,setShowOptions] = useState(false)
-
-    const clickMockInput = ({nativeEvent})=>{
-        const x = nativeEvent.pageX - nativeEvent.locationX
-        const y = nativeEvent.pageY - nativeEvent.locationY + 50
-        setLocation({...location,x,y})
-        setShowOptions(!showOptions)
-    }
-
-    const onLayout = ({nativeEvent})=>{
-        const {width,height,x,y} = nativeEvent.layout
-        console.log({width,height,x,y});
-        setLocation({
-            ...location,
-            width,
-            height,
-        })
-    }
-    const options = [
-        {
-            label:'name1',
-            value:'1',
-        },
-        {
-            label:'name2',
-            value:'2',
-        },
-        {
-            label:'name3',
-            value:'3',
-        },
-    ]
-
-    return (
-        <FormItem
-            label={props.label}
-        >
-            <Select options={options}></Select>
-        </FormItem>
-    )
-}
-
-/* 
 
 
-*/
 function FormInputItem(props){
     return (
         <FormItem
@@ -173,6 +137,7 @@ function FormInputItem(props){
                     backgroundColor:'#fff',
                     borderRadius:6,
                     flex:1,
+                    paddingHorizontal:10,
                 }}
                 value={props.value}
                 onChange={({nativeEvent})=>props.onChange(nativeEvent.text)}
@@ -180,65 +145,4 @@ function FormInputItem(props){
         </FormItem>
     )
 }
-function FormItem(props){
-    return (
-        <View
-            style={{
-                display:'flex',
-                flexDirection:'row',
-                alignItems:'center',
-                paddingVertical:8,
-                paddingHorizontal:20,
-            }}
-        >
-            <View
-                style={{
-                    width:80,
-                }}
-            >
-                <Text
-                    style={{
-                        fontSize:18,
-                        fontWeight:500,
-                        color:'#333',
-                    }}
-                >{props.label}</Text>
-            </View>
-            {props.children}
-        </View>
-    )
-}
 
-function Header(props){
-    const handleBack =()=>{}
-    const handleConfirm =()=>{}
-
-
-    return (
-        <View
-            style={{
-                display:'flex',
-                flexDirection:'row',
-                flexWrap:'nowrap',
-                alignItems:'center',
-                justifyContent:'space-between',
-                padding:12,
-            }}
-        >
-            <Text 
-                style={{
-                    color:'#000',
-                    fontSize:16,
-                }}
-                onPress={props.onBack}
-            >返回</Text>
-            <Text 
-                style={{
-                    color:'#000',
-                    fontSize:16,
-                }}
-                onPress={handleConfirm}
-            >确认</Text>
-        </View>
-    )
-}

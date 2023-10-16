@@ -6,10 +6,26 @@ import {
     TouchableWithoutFeedback,
 } from 'react-native'
 import Icon from 'react-native-vector-icons/Ionicons';
-import Styles from './HeaderStyle'
 
 
-
+const Styles = StyleSheet.create({
+    headerInner:{
+        display:'flex',
+        flexDirection:'row',
+        flexWrap:'nowrap',
+        alignItems:'center',
+        justifyContent:'space-between',
+        paddingHorizontal:12,
+        paddingVertical:6,
+    },
+    classifyWrap:{
+        display:'flex',
+        flexDirection:'row',
+        flexWrap:'nowrap',
+        alignItems:'center',
+        gap:5,
+    },
+})
 
 export default function Header(props){
     const handleOption = ()=>{

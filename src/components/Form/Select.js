@@ -1,19 +1,17 @@
 import React, {
   useState,
+  useEffect,
 } from "react";
 import {
   View,
   Text,
   TouchableWithoutFeedback,
+  Modal,
 } from 'react-native'
 
 
 
-
-
-export function Select({
-  options,
-}) {
+export function Select({options,value,onChange}) {
 
   const [showOptions, setShowOptions] = useState(false)
   const [location, setLocation] = useState({
@@ -22,17 +20,21 @@ export function Select({
     width: 0,
     height: 0,
   })
+  const getCurrentLabel = ()=>{
+    const match = options.filter(i=>i.value === value)[0]
+    return match ? match.label : ''
+  }
+  const [currentLabel,setCurrentLabel] = useState(getCurrentLabel)
 
-  const clickSelect = ({ nativeEvent }) => {
+  useEffect(()=>{
+    setCurrentLabel(getCurrentLabel())
+  },[value,options])
+
+  const handleClick = ({ nativeEvent }) => {
     const x = nativeEvent.pageX - nativeEvent.locationX
     const y = nativeEvent.pageY - nativeEvent.locationY + 50
     setLocation({ ...location, x, y })
     setShowOptions(!showOptions)
-  }
-
-  const clickOptions = e =>{
-    e.stopPropagation()
-    consol.log(e.target)
   }
 
   const onLayout = ({ nativeEvent }) => {
@@ -45,10 +47,19 @@ export function Select({
     })
   }
 
+  const selectOption = item =>{
+    if(item.value === value) return setShowOptions(false)
+    console.log({val:item.value});
+    onChange(item.value)
+    setShowOptions(false)
+  }
+
+  
+
   return (
     <>
       <TouchableWithoutFeedback
-        onPress={clickSelect}
+        onPress={handleClick}
       >
         <View
           style={{
@@ -62,9 +73,10 @@ export function Select({
           <Text
             style={{
               lineHeight: 50,
+              paddingHorizontal:10,
             }}
           >
-            Select Value
+            {currentLabel}
           </Text>
         </View>
       </TouchableWithoutFeedback>
@@ -81,39 +93,47 @@ export function Select({
               position: 'relative',
             }}
           >
-            <TouchableWithoutFeedback
-              onPress={clickOptions}
+            <View
+              style={{
+                position: 'absolute',
+                top: location.y,
+                left: location.x,
+                width: location.width,
+                backgroundColor: '#fff',
+                borderRadius: 6,
+                paddingHorizontal:10,
+              }}
             >
-              <View
-                style={{
-                  position: 'absolute',
-                  top: location.y,
-                  left: location.x,
-                  width: location.width,
-                  backgroundColor: '#fff',
-                  borderRadius: 6,
-                }}
-              >
-                {
-                  options.map(item => (
-                    <View
-                      style={{
-                        paddingVertical: 6,
-                      }}
-                    >
-                      <Text
-                        style={{
-                          color: '#000',
-                        }}
-                      >{item.label}</Text>
-                    </View>
-                  ))
-                }
-              </View>
-            </TouchableWithoutFeedback>
+              {
+                options.map(item => (
+                  <Option item={item} key={item.value} onPress={selectOption}></Option> 
+                ))
+              }
+            </View>
           </View>
         </TouchableWithoutFeedback>
       </Modal>
     </>
+  )
+}
+
+function Option({item,onPress,}){
+
+  return (
+    <TouchableWithoutFeedback
+      onPress={()=>onPress(item)}
+    >
+      <View
+        style={{
+          paddingVertical: 6,
+        }}
+      >
+        <Text
+          style={{
+            color: '#000',
+          }}
+        >{item.label}</Text>
+      </View>
+    </TouchableWithoutFeedback>
   )
 }
