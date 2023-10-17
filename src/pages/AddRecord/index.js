@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
     View,
     Button,
@@ -24,7 +24,12 @@ const db = openDatabase('db.db')
 
 export default function AddRecord({navigation,route}){
     console.log('route.params',route.params)
-    const [isEdit,setIsEdit] = useState(false)
+    const [isEdit,setIsEdit] = useState(()=>{
+        if(!route.params) return true
+        return route.params.id === undefined
+    })
+
+    const isAppend = route.params.isAppend !== undefined
     
     const [categray,setCategray] = useState('')
     const [acount,setAcount] = useState('')
@@ -36,12 +41,30 @@ export default function AddRecord({navigation,route}){
     const handleBack =()=>{
         navigation.goBack()
     }
+
     const handleEdit = ()=>{
         setIsEdit(true)
     }
+
     const handleCancleEdit = ()=>{
         setIsEdit(false)
     }
+
+    const getData = async ()=>{
+        const rows = await executeSql(db,'select * from memo_list where id = ?',[route.params.id])
+        const data = rows._array[0]
+        console.log({data});
+        setCategray(data.type)
+        setAcount(data.acount)
+        setPassword(data.password)
+        setLevel(data.level)
+        setRemark(data.remark)
+    }
+
+    useEffect(()=>{
+        route.params && route.params.id && getData()
+    },[])
+
     const handleConfirm = async ()=>{
         const date = Date.now() + ''
         await executeSql(db,
@@ -54,6 +77,7 @@ export default function AddRecord({navigation,route}){
         setIsEdit(false)
         navigation.goBack()
     }
+
     return (
         <View>
             <Header 

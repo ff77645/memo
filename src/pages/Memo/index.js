@@ -1,4 +1,5 @@
 import React, {
+    useCallback,
     useEffect,
     useState,
 } from "react"
@@ -17,6 +18,7 @@ import ClassifyModal from "./ClassifyModal"
 import * as SQLite from "expo-sqlite";
 import {executeSql} from '../../utils'
 import {initDatabase,initClassify} from './helper'
+import {useFocusEffect} from '@react-navigation/native'
 
 import {
     classifyList,
@@ -52,17 +54,23 @@ export default function Memo({ navigation }) {
     }
 
     const navToAddRecord = () => {
-        navigation.navigate('AddRecord')
+        navigation.navigate('AddRecord',{
+            isAppend:true
+        })
         // add(`text ${id}`)
+    }
+
+    const getMemoList = async ()=>{
+        const _memoList = await executeSql(db,'select * from memo_list')
+        console.log({memoList});
+        setMemoList(_memoList._array)
     }
 
     const initData = async ()=>{
         const clasRows = await executeSql(db,'select * from classify')
         // console.log({clasRows:JSON.stringify(clasRows)});
         setClassify(clasRows._array)
-        const _memoList = await executeSql(db,'select * from memo_list')
-        console.log({memoList});
-        setMemoList(_memoList._array)
+        getMemoList()
         if(!clasRows.length) {
             console.log('classify empty');
             await initClassify(db)
@@ -73,6 +81,10 @@ export default function Memo({ navigation }) {
         initDatabase(db)
         initData()
     }, [])
+    useFocusEffect(useCallback(()=>{
+        console.log('screen focus');
+        getMemoList()
+    },[]))
 
     const selectRecord = item =>{
         console.log({item});
