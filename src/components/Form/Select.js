@@ -11,7 +11,12 @@ import {
 
 
 
-export function Select({options,value,onChange}) {
+export function Select({
+    options,
+    value,
+    onChange,
+    disable,
+  }) {
 
   const [showOptions, setShowOptions] = useState(false)
   const [location, setLocation] = useState({
@@ -31,6 +36,7 @@ export function Select({options,value,onChange}) {
   },[value,options])
 
   const handleClick = ({ nativeEvent }) => {
+    if(disable) return
     const x = nativeEvent.pageX - nativeEvent.locationX
     const y = nativeEvent.pageY - nativeEvent.locationY + 50
     setLocation({ ...location, x, y })

@@ -8,7 +8,7 @@ import {
 
 export default function ClassifyModal({
   value,
-  options,
+  data,
   onClose,
   changeClassify
 }){
@@ -58,8 +58,8 @@ export default function ClassifyModal({
                   }}
                 >
                   {
-                    options.map((item,index)=>(
-                      <ClassifyItem selected={value === item.value} onPress={selectClassify} item={item} key={index}></ClassifyItem>
+                    data.map((item,index)=>(
+                      <ClassifyItem selected={value.value === item.value} onPress={selectClassify} item={item} key={index}></ClassifyItem>
                     ))
                   }
                 </View>

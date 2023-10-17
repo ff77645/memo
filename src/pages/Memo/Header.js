@@ -4,6 +4,7 @@ import {
     Text,
     TouchableOpacity,
     TouchableWithoutFeedback,
+    StyleSheet,
 } from 'react-native'
 import Icon from 'react-native-vector-icons/Ionicons';
 
@@ -27,12 +28,16 @@ const Styles = StyleSheet.create({
     },
 })
 
-export default function Header(props){
+export default function Header({
+    categray,
+    onSetShowCategray,
+    showCategray,
+}){
     const handleOption = ()=>{
         console.log(123)
     }
     const clickCategray = ()=>{
-        props.onSetShowCategray(!props.showCategray)
+        onSetShowCategray(!showCategray)
     }
 
     return (
@@ -45,19 +50,19 @@ export default function Header(props){
                                 fontSize:26,
                                 fontWeight:'bold',
                                 color:'#000',
-                            }}>账号3</Text>
+                            }}>{categray.name}</Text>
                             {
-                                props.showCategray ? 
+                                showCategray ? 
                                 <Icon name="caret-up" size={18} color="#000"></Icon> :
                                 <Icon name="caret-down" size={18} color="#000"></Icon>
                             }
                         </View>
                     </TouchableWithoutFeedback>
-                    <Text style={{color:"#333"}}>9条记录</Text>
+                    <Text style={{color:"#333"}}>{categray.amount}条记录</Text>
                 </View>
                 <View style={Styles.headerInnerRight}>
                     <TouchableOpacity onPress={handleOption}>
-                        {!props.showCategray && <Icon name="ellipsis-vertical" size={20} color="#000"></Icon>}
+                        {!showCategray && <Icon name="ellipsis-vertical" size={20} color="#000"></Icon>}
                     </TouchableOpacity>
                 </View>
             </View>

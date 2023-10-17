@@ -1,4 +1,5 @@
 import React, {
+    useEffect,
     useState,
 } from "react"
 import {
@@ -7,31 +8,79 @@ import {
     ScrollView,
     FlatList,
     TextInput,
+    Platform,
 } from 'react-native'
 import Header from "./Header"
 import RecordItem from "./RecordItem"
 import AddButton from "./AddButton"
 import ClassifyModal from "./ClassifyModal"
+import * as SQLite from "expo-sqlite";
+import {executeSql} from '../../utils'
+import {initDatabase,initClassify} from './helper'
+
 import {
-    memoList,
     classifyList,
 } from './mock'
+
+const db = SQLite.openDatabase("db.db");
 
 
 export default function Memo({ navigation }) {
 
-    const recordList = Array.from({ length: 20 })
+    const [memoList,setMemoList] = useState([])
     const [showCategray, setShowCategray] = useState(false)
-    const [currentClassifyVal,setCurrentClassifyVal] = useState('all')
+    const [currentClassifyVal, setCurrentClassifyVal] = useState({})
+    const [classify,setClassify] = useState([])
 
+    let id = 0
+
+    const add = async (text) => {
+        if (text === null || text === "") return false
+        await executeSql(db,"insert into items (done, value) values (0, ?)",[text])
+        const rows = await executeSql(db,"select * from items")
+        console.log(JSON.stringify(rows))
+    }
+
+    const query = async ()=>{
+        const rows = await executeSql(db,"select * from items")
+        console.log(JSON.stringify(rows))
+    }
+
+    const changeClassify = item => {
+        setCurrentClassifyVal(item)
+        query()
+    }
 
     const navToAddRecord = () => {
         navigation.navigate('AddRecord')
+        // add(`text ${id}`)
     }
-    const changeClassify = item => {
-        setCurrentClassifyVal(item.value)
+
+    const initData = async ()=>{
+        const clasRows = await executeSql(db,'select * from classify')
+        // console.log({clasRows:JSON.stringify(clasRows)});
+        setClassify(clasRows._array)
+        const _memoList = await executeSql(db,'select * from memo_list')
+        console.log({memoList});
+        setMemoList(_memoList._array)
+        if(!clasRows.length) {
+            console.log('classify empty');
+            await initClassify(db)
+        }
+    }
+
+    useEffect(() => {
+        initDatabase(db)
+        initData()
+    }, [])
+
+    const selectRecord = item =>{
         console.log({item});
+        navigation.navigate('AddRecord',{
+            id:item.id,
+        })
     }
+
 
     return (
         <View
@@ -44,6 +93,7 @@ export default function Memo({ navigation }) {
         >
             <Header
                 showCategray={showCategray}
+                categray={currentClassifyVal}
                 onSetShowCategray={setShowCategray}
             ></Header>
             <View
@@ -54,18 +104,16 @@ export default function Memo({ navigation }) {
             >
                 <ListHeader></ListHeader>
                 <FlatList
-                    data={recordList}
-                    // ListHeaderComponent={ListHeader}
-                    renderItem={() => <RecordItem />}
+                    data={memoList}
+                    renderItem={({item}) => <RecordItem item={item} onPress={selectRecord}/>}
                 >
                 </FlatList>
                 {!showCategray && <AddButton onPress={navToAddRecord}></AddButton>}
                 {showCategray && <ClassifyModal
-                    options={classifyList}
+                    data={classify}
                     value={currentClassifyVal}
                     onClose={() => {
                         setShowCategray(false)
-                        console.log(123);
                     }}
                     changeClassify={changeClassify}
                 ></ClassifyModal>}

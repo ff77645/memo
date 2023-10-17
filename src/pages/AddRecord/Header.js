@@ -11,9 +11,15 @@ export default function Header({
   onConfirm,
   onEdit,
 }) {
-  const handleBack = () => { }
-  const handleConfirm = () => { }
 
+  const handleLeft = ()=>{
+    isEdit ? onCancle() : onBack()
+  }
+
+  const handleRight = ()=>{
+    console.log({isEdit});
+    isEdit ? onConfirm() : onEdit()
+  }
 
   return (
     <View
@@ -26,38 +32,20 @@ export default function Header({
         padding: 12,
       }}
     >
-
-      {
-        isEdit ? <Text
-          style={{
-            color: '#000',
-            fontSize: 16,
-          }}
-          onPress={onBack}
-        >取消</Text> : <Text
-          style={{
-            color: '#000',
-            fontSize: 16,
-          }}
-          onPress={onBack}
-        >返回</Text>
-      }
-      {
-        isEdit ? <Text
-          style={{
-            color: '#000',
-            fontSize: 16,
-          }}
-          onPress={handleConfirm}
-        >确认</Text> :
-          <Text
-            style={{
-              color: '#000',
-              fontSize: 16,
-            }}
-            onPress={handleConfirm}
-          >编辑</Text>
-      }
+      <Text
+        style={{
+          color: '#000',
+          fontSize: 16,
+        }}
+        onPress={handleLeft}
+      >{isEdit ? "取消" : "返回"}</Text>
+      <Text
+        style={{
+          color: '#000',
+          fontSize: 16,
+        }}
+        onPress={handleRight}
+      >{isEdit ? "确认" : "编辑"}</Text>
     </View>
   )
 }
