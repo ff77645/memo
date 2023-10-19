@@ -4,7 +4,7 @@
  *
  * @format
  */
-
+import 'react-native-gesture-handler';
 import React from 'react';
 import { StatusBar, StyleSheet, Text, useColorScheme, View } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native'
@@ -15,13 +15,20 @@ import Animation from './src/pages/Animation'
 import Home from './src/pages/Home'
 import HomeTabs from './src/pages/HomeTabs'
 import AddRecord from "./src/pages/AddRecord"
-
+import Main from './src/pages/Main';
 
 const RootStack = createNativeStackNavigator()
 
 function App() {
 
   const routes = [
+    {
+      name: 'Main',
+      component: Main,
+      options: {
+        headerShown: false
+      }
+    },
     {
       name: 'HomeTabs',
       component: HomeTabs,
