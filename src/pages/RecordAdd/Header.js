@@ -5,7 +5,7 @@ import {
     TouchableOpacity,
 } from "react-native";
 import Icon from 'react-native-vector-icons/Ionicons';
-import BaseHeader from "../../components/BaseHeader";
+import BaseHeader from '../../components/BaseHeader'
 
 
 const flexRowAlignCenterBetween = {
@@ -20,9 +20,10 @@ const fontStyle = {
 }
 
 export default function Header({
-    openDrawer,
     title,
-    backgroundColor
+    goBack,
+    onSave,
+    backgroundColor,
 }){
 
     const handleOption = ()=>{}
@@ -47,8 +48,8 @@ export default function Header({
                         gap:20,
                     }}
                 >
-                    <TouchableOpacity onPress={openDrawer}>
-                        <Icon name="menu-outline" size={20} color="#fff"></Icon>
+                    <TouchableOpacity onPress={goBack}>
+                        <Icon name="close-outline" size={28} color="#fff"></Icon>
                     </TouchableOpacity>
                     <Text
                         style={[
@@ -59,22 +60,25 @@ export default function Header({
                         ]}
                     >{title}</Text>
                 </View>
-                <TouchableOpacity onPress={handleOption}>
-                    <Icon name="search-outline" size={20} color="#fff"></Icon>
-                </TouchableOpacity>
+                {/* <View>
+                    <Text style={fontStyle}>存档</Text>
+                </View> */}
             </View>
             <View
-                style={[
-                    {
-                        width:60,
-                        display:'flex',
-                        flexDirection:'row',
-                        justifyContent:'center',
-                    }
-                ]}
+                style={{
+                    width:60,
+                    display:'flex',
+                    flexDirection:'row',
+                    justifyContent:'center',
+                }}
             >
-                <TouchableOpacity onPress={handleOption}>
+                {/* <TouchableOpacity onPress={handleOption}>
                     <Icon name="ellipsis-vertical" size={20} color="#fff"></Icon>
+                </TouchableOpacity> */}
+                <TouchableOpacity onPress={onSave}>
+                    <Text
+                        style={fontStyle}
+                    >保存</Text>
                 </TouchableOpacity>
             </View>
         </BaseHeader>
