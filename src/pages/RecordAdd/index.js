@@ -1,14 +1,17 @@
 import React,{
   useState,
+  useEffect,
 } from "react";
 import {
   View,
   TouchableOpacity,
+  ToastAndroid,
 } from 'react-native'
 import Header from "./Header";
 import { TextInput } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/Ionicons';
-
+import {openDatabase} from 'expo-sqlite'
+import {executeSql} from '../../utils'
 
 const formDataRaw = {
   title:'',
@@ -19,11 +22,33 @@ const formDataRaw = {
   desc:'',
 }
 
-export default function RecordAdd({ navigation }) {
+const formCheckStateRaw = {
+  title:false,
+}
+
+const db = openDatabase('db.db')
+
+
+export default function RecordAdd({ navigation,route }) {
   const [formData,setFormData] = useState(formDataRaw)
-  const [isDisable,setIsDisable] = useState(true)
+  const [formCheckState,setFormCheckState] = useState(formCheckStateRaw)
+  const [isDisable,setIsDisable] = useState(()=>{
+    if(!route.params || !route.params.id) return false
+    return true
+  })
+  const [opreationType,setOpreationType] = useState(isDisable ? 'preview' : 'edit')
+
+
   const goBack = () => {
     navigation.goBack()
+  }
+
+  const getData = async (id)=>{
+    console.log('getData',id);
+    const data = await executeSql(db,`select * from records where id = ?`,[id])
+    const res = data._array[0]
+    console.log({res});
+    setFormData(res)
   }
   
   const onChangeFormData = (field,value) =>{
@@ -34,7 +59,8 @@ export default function RecordAdd({ navigation }) {
   }
 
   const inputProps = {
-    mode:'outlined'
+    mode:'outlined',
+    editable:!isDisable,
   }
 
   const passwordRefresh = ()=>{
@@ -42,23 +68,89 @@ export default function RecordAdd({ navigation }) {
     // onChangeFormData('password',val)
   }
 
-
-  const handleSave = ()=>{
-    console.log('handleSave');
+  // 字段检查
+  const checkField = ()=>{
+    if(!formData.title){
+      setFormCheckState({
+        ...formCheckState,
+        title:true,
+      })
+      return false
+    }else if(formCheckState.title){
+      setFormCheckState({
+        ...formCheckState,
+        title:false,
+      })
+    }
+    return true
   }
 
+  const handleSave = async ()=>{
+    if(!checkField()) return
+    const date = Date.now() + ''
+    const {title,acount,userName,password,url,desc} = formData
+    console.log('route.params.type',route.params.type);
+    // 有id修改 无id添加
+    if(route.params && route.params.id){
+      await executeSql(db,
+        `update records set title=?,acount=?,userName=?,password=?,url=?,desc=?,update_date=? where id = ?`,
+        [title,acount,userName,password,url,desc,date,route.params.id]
+      )
+      ToastAndroid.showWithGravity('修改成功',ToastAndroid.SHORT,ToastAndroid.CENTER)
+    }else{
+      await executeSql(db,
+        `insert into records (type,title,acount,userName,password,url,desc,create_date,update_date) values (?,?,?,?,?,?,?,?,?)`,
+        [route.params.type,title,acount,userName,password,url,desc,date,date]
+      )
+      ToastAndroid.showWithGravity('添加成功',ToastAndroid.SHORT,ToastAndroid.CENTER)
+    }
+    navigation.goBack()
+  }
+
+  const handleDeleteRecord =async ()=>{
+    await executeSql(db,
+      `delete from records where id = ?`,
+        [route.params.id]
+    )
+    ToastAndroid.showWithGravity('删除成功',ToastAndroid.SHORT,ToastAndroid.CENTER)
+    navigation.goBack()
+  }
+  
+  
+  const changeType= type =>{
+    setIsDisable(type === 'preview')
+    setOpreationType(type)
+  }
+
+  const deleteField = field=>{
+    onChangeFormData(field,undefined)
+  }
+
+  useEffect(()=>{
+    route.params && route.params.id && getData(route.params.id)
+  },[])
+  
   return (
     <View>
-      <Header goBack={goBack} onSave={handleSave} ></Header>
-      <InputItem disable={isDisable}>
+      <Header 
+        goBack={goBack} 
+        title={formData.title} 
+        onSave={handleSave} 
+        type={opreationType}
+        onSetType={changeType}
+        onDelete={handleDeleteRecord}
+      ></Header>
+      {/* <InputItem onDelete={()=>deleteField('title')} field={formData.title} disable={isDisable}> */}
+      <InputItem field={'true'} disable={true}>
         <TextInput
           {...inputProps}
           label="标题"
+          error={formCheckState.title}
           value={formData.title}
           onChangeText={val=>onChangeFormData('title',val)}
         ></TextInput>
       </InputItem>
-      <InputItem disable={isDisable}>
+      <InputItem onDelete={()=>deleteField('acount')} field={formData.acount} disable={isDisable}>
         <TextInput
           {...inputProps}
           label="账户"
@@ -66,7 +158,7 @@ export default function RecordAdd({ navigation }) {
           onChangeText={val=>onChangeFormData('acount',val)}
         ></TextInput>
       </InputItem>
-      <InputItem disable={isDisable}>
+      <InputItem onDelete={()=>deleteField('userName')} field={formData.userName} disable={isDisable}>
         <TextInput
           {...inputProps}
           label="用户名"
@@ -74,7 +166,7 @@ export default function RecordAdd({ navigation }) {
           onChangeText={val=>onChangeFormData('userName',val)}
         ></TextInput>
       </InputItem>
-      <InputItem disable={isDisable}>
+      <InputItem onDelete={()=>deleteField('password')} field={formData.password} disable={isDisable}>
         <TextInput
           {...inputProps}
           label="密码"
@@ -84,7 +176,7 @@ export default function RecordAdd({ navigation }) {
           onChangeText={val=>onChangeFormData('password',val)}
         ></TextInput>
       </InputItem>
-      <InputItem disable={isDisable}>
+      <InputItem onDelete={()=>deleteField('url')} field={formData.url} disable={isDisable}>
         <TextInput
           {...inputProps}
           label="网址"
@@ -92,7 +184,7 @@ export default function RecordAdd({ navigation }) {
           onChangeText={val=>onChangeFormData('url',val)}
         ></TextInput>
       </InputItem>
-      <InputItem disable={isDisable}>
+      <InputItem onDelete={()=>deleteField('desc')} field={formData.desc} disable={isDisable}>
         <TextInput
           {...inputProps}
           label="描述"
@@ -106,8 +198,13 @@ export default function RecordAdd({ navigation }) {
 
 function InputItem({
   disable,
+  field,
   children,
+  onDelete,
 }){
+  // 预览模式: 字段为falsy 则不显示
+  // 编辑模式: 字段为undefined 则不显示
+  if(disable ? !field : field === undefined ) return (<View></View>)
   return (
     <View
       style={{
@@ -122,7 +219,7 @@ function InputItem({
         {children}
       </View>
       {
-        !disable && <TouchableOpacity>
+        !disable && <TouchableOpacity onPress={onDelete}>
           <Icon name="close-circle-outline" size={26}></Icon>
         </TouchableOpacity>
       }

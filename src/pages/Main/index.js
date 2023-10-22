@@ -86,6 +86,9 @@ export default function Main() {
         >
             <Drawer.Screen
                 name="全部"
+                initialParams={{
+                    type:''
+                }}
                 component={Record}
                 options={{
                     drawerIcon({focused,color,size}){
@@ -100,6 +103,9 @@ export default function Main() {
                     <Drawer.Screen
                         key={item.key}
                         name={item.name}
+                        initialParams={{
+                            type:item.key
+                        }}
                         component={Record}
                         options={{
                             drawerIcon({focused,color,size}){
