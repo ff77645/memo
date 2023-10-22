@@ -12,6 +12,7 @@ import { Button } from "react-native-paper";
 import Record from "../Record";
 import DrawerContent from './DrawerContent'
 import Icon from 'react-native-vector-icons/Ionicons'
+import Empty from "../../components/Empty";
 
 const Drawer = createDrawerNavigator();
 
@@ -39,17 +40,17 @@ const fixedScreens =[
             },
         },
     },
-    {
-        name:'编辑标签',
-        component:Article,
-        options:{
-            title:'system',
-            drawerLabel:'编辑标签',
-            drawerIcon({focused,color,size}){
-                return (<Icon name="create-outline" color={color} size={size} />)
-            },
-        },
-    },
+    // {
+    //     name:'编辑标签',
+    //     component:Redirect,
+    //     options:{
+    //         title:'system',
+    //         drawerLabel:'编辑标签',
+    //         drawerIcon({focused,color,size}){
+    //             return (<Icon name="create-outline" color={color} size={size} />)
+    //         },
+    //     },
+    // },
     {
         name:'设置',
         component:Article,
@@ -63,7 +64,7 @@ const fixedScreens =[
     },
 ]
 
-export default function Main() {
+export default function Main({navigation}) {
 
     const tagCategray = [
         {
@@ -117,6 +118,24 @@ export default function Main() {
                     />
                 ))
             }
+            <Drawer.Screen
+                name="编辑标签"
+                component={Empty}
+                options={{
+                    title:'system',
+                    drawerLabel:'编辑标签',
+                    drawerIcon({focused,color,size}){
+                        return (<Icon name="create-outline" color={color} size={size} />)
+                    },
+                }}
+                listeners={({navigation:n})=>({
+                    drawerItemPress(e){
+                        e.preventDefault()
+                        n.closeDrawer();
+                        navigation.navigate('TagManage')
+                    },
+                })}
+            />
             {
                 fixedScreens.map((item,index)=>(
                     <Drawer.Screen
@@ -127,6 +146,8 @@ export default function Main() {
                     />
                 ))
             }
+ 
+            
         </Drawer.Navigator>
     );
 }
