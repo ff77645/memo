@@ -12,9 +12,8 @@ import {useFocusEffect} from '@react-navigation/native'
 
 const db = openDatabase('db.db')
 
-
+let dataRaw = []
 export default function Record({navigation,route}){
-
     const [recordList,setRecordList] = useState([])
     const addRecord = ()=>{
         // console.log('addRecord');
@@ -31,8 +30,8 @@ export default function Record({navigation,route}){
         }else{
             records = await executeSql(db,'select * from records')
         }
-        console.log({records:JSON.stringify(records._array)});
-        setRecordList(records._array)
+        dataRaw = records._array
+        setRecordList(dataRaw)
     }
 
     useFocusEffect(useCallback(()=>{
@@ -48,6 +47,12 @@ export default function Record({navigation,route}){
             type:route.params.type,
         })
     }
+    const onSearch = val =>{
+        console.log('onSearch',val);
+        setRecordList(dataRaw.filter(item=>{
+            return item.title.includes(val) || item.acount.includes(val)
+        }))
+    }
 
     return (
         <View
@@ -59,6 +64,7 @@ export default function Record({navigation,route}){
             <Header
                 title={route.name}
                 openDrawer={navigation.openDrawer}
+                onSearch={onSearch}
             ></Header>
             <View
                 style={{
