@@ -67,18 +67,7 @@ export default function Header({backgroundColor, ...props}) {
         ) : (
           <DefaultView {...props} setIsSearch={setIsSearch} />
         )}
-
-        <View
-          style={[
-            {
-              width: 60,
-              display: 'flex',
-              flexDirection: 'row',
-              justifyContent: 'center',
-            },
-          ]}>
-            <IconButton onPress={handleOption} name="ellipsis-vertical" size={20} color="#fff"></IconButton>
-        </View>
+        <IconButton onPress={handleOption} name="ellipsis-vertical" size={20} color="#fff" style={{marginRight:16,}}></IconButton>
       </BaseHeader>
       <ModalAction visible={visible} onClose={() => setVisible(false)}>
         <View
