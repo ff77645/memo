@@ -2,17 +2,14 @@ import React, {useState} from 'react';
 import {
   Text,
   View,
-  TouchableOpacity,
-  Modal,
-  TouchableWithoutFeedback,
   TextInput,
 } from 'react-native';
-import Icon from 'react-native-vector-icons/Ionicons';
 import BaseHeader from '../../components/BaseHeader';
 import {List} from 'react-native-paper';
 import {openDatabase} from 'expo-sqlite';
 import {executeSql} from '../../utils';
 import ModalAction from '../../components/ModalAction';
+import IconButton from '../../components/IconButton';
 
 const db = openDatabase('db.db');
 
@@ -80,9 +77,7 @@ export default function Header({backgroundColor, ...props}) {
               justifyContent: 'center',
             },
           ]}>
-          <TouchableOpacity onPress={handleOption}>
-            <Icon name="ellipsis-vertical" size={20} color="#fff"></Icon>
-          </TouchableOpacity>
+            <IconButton onPress={handleOption} name="ellipsis-vertical" size={20} color="#fff"></IconButton>
         </View>
       </BaseHeader>
       <ModalAction visible={visible} onClose={() => setVisible(false)}>
@@ -110,7 +105,7 @@ function DefaultView({openDrawer, title, setIsSearch}) {
         flexRowAlignCenterBetween,
         {
           flex: 1,
-          paddingHorizontal: 20,
+          paddingHorizontal: 16,
         },
       ]}>
       <View
@@ -119,11 +114,13 @@ function DefaultView({openDrawer, title, setIsSearch}) {
           flexDirection: 'row',
           flexWrap: 'nowrap',
           alignItems: 'center',
-          gap: 20,
+          gap: 16,
         }}>
-        <TouchableOpacity onPress={openDrawer}>
-          <Icon name="menu-outline" size={20} color="#fff"></Icon>
-        </TouchableOpacity>
+        <IconButton
+          onPress={openDrawer}
+          name="menu-outline"
+          size={20}
+          color="#fff"></IconButton>
         <Text
           style={[
             fontStyle,
@@ -134,9 +131,11 @@ function DefaultView({openDrawer, title, setIsSearch}) {
           {title}
         </Text>
       </View>
-      <TouchableOpacity onPress={() => setIsSearch(true)}>
-        <Icon name="search-outline" size={20} color="#fff"></Icon>
-      </TouchableOpacity>
+      <IconButton
+        onPress={() => setIsSearch(true)}
+        name="search-outline"
+        size={20}
+        color="#fff"></IconButton>
     </View>
   );
 }
@@ -147,17 +146,17 @@ function SearchView({onBack, onSearch}) {
     setValue(val);
     onSearch(val);
   };
-  const handleBack = ()=>{
-    onChange('')
-    onBack()
-  }
+  const handleBack = () => {
+    onChange('');
+    onBack();
+  };
   return (
     <View
       style={[
         flexRowAlignCenterBetween,
         {
           flex: 1,
-          paddingHorizontal: 20,
+          paddingHorizontal: 16,
         },
       ]}>
       <View
@@ -168,15 +167,13 @@ function SearchView({onBack, onSearch}) {
           alignItems: 'center',
           gap: 20,
         }}>
-        <TouchableOpacity onPress={handleBack}>
-          <Icon name="arrow-back-outline" size={20} color="#fff"></Icon>
-        </TouchableOpacity>
+          <IconButton onPress={handleBack} name="arrow-back-outline" size={20} color="#fff"></IconButton>
       </View>
       <TextInput
         style={{
-            flex:1,
-            marginLeft:30,
-            color:'#FFF',
+          flex: 1,
+          marginLeft: 30,
+          color: '#FFF',
         }}
         cursorColor="#b33939"
         placeholderTextColor="#CCC"

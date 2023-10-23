@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import {View, Text,TouchableOpacity} from 'react-native';
 import BaseHeader from '../../components/BaseHeader';
-import Icon from 'react-native-vector-icons/Ionicons';
+import IconButton from '../../components/IconButton';
 
 const flexRowAlignCenterBetween = {
   display: 'flex',
@@ -25,7 +25,7 @@ export default function TagManage({navigation}) {
             flexRowAlignCenterBetween,
             {
               flex: 1,
-              paddingHorizontal: 20,
+              paddingHorizontal: 16,
             },
           ]}>
           <View
@@ -34,11 +34,9 @@ export default function TagManage({navigation}) {
               flexDirection: 'row',
               flexWrap: 'nowrap',
               alignItems: 'center',
-              gap: 20,
+              gap: 16,
             }}>
-            <TouchableOpacity onPress={()=>navigation.goBack()}>
-              <Icon name="arrow-back-outline" size={28} color="#fff"></Icon>
-            </TouchableOpacity>
+            <IconButton onPress={()=>navigation.goBack()} name="arrow-back-outline" size={28} color="#fff"></IconButton>
             <Text
               style={[
                 fontStyle,

@@ -4,12 +4,11 @@ import React,{
 import { 
     Text, 
     View,
-    TouchableOpacity,
 } from "react-native";
-import Icon from 'react-native-vector-icons/Ionicons';
 import BaseHeader from '../../components/BaseHeader'
 import ModalAction from '../../components/ModalAction'
 import {List} from 'react-native-paper'
+import IconButton from "../../components/IconButton";
 
 const flexRowAlignCenterBetween = {
     display:'flex',
@@ -71,9 +70,7 @@ function Preview({
                     gap:20,
                 }}
             >
-                <TouchableOpacity onPress={goBack}>
-                    <Icon name="arrow-back-outline" size={28} color="#fff"></Icon>
-                </TouchableOpacity>
+                <IconButton onPress={goBack} name="arrow-back-outline" size={28} color="#fff"></IconButton>
                 <Text
                     style={[
                         fontStyle,
@@ -95,9 +92,7 @@ function Preview({
                 justifyContent:'center',
             }}
         >
-            <TouchableOpacity onPress={() => setVisible(true)}>
-                <Icon name="ellipsis-vertical" size={20} color="#fff"></Icon>
-            </TouchableOpacity>
+            <IconButton onPress={() => setVisible(true)} name="ellipsis-vertical" size={20} color="#fff"></IconButton>
         </View>
         <ModalAction visible={visible} onClose={() => setVisible(false)}>
             <View
@@ -145,9 +140,7 @@ function EditView({
                         gap:20,
                     }}
                 >
-                    <TouchableOpacity onPress={goBack}>
-                        <Icon name="close-outline" size={28} color="#fff"></Icon>
-                    </TouchableOpacity>
+                    <IconButton onPress={goBack} name="close-outline" size={28} color="#fff"></IconButton>
                 </View>
                 {/* <View>
                     <Text style={fontStyle}>存档</Text>
@@ -161,14 +154,10 @@ function EditView({
                     justifyContent:'center',
                 }}
             >
-                {/* <TouchableOpacity onPress={handleOption}>
-                    <Icon name="ellipsis-vertical" size={20} color="#fff"></Icon>
-                </TouchableOpacity> */}
-                <TouchableOpacity onPress={onSave}>
-                    <Text
-                        style={fontStyle}
-                    >保存</Text>
-                </TouchableOpacity>
+                <Text
+                    onPress={onSave}
+                    style={fontStyle}
+                >保存</Text>
             </View>
         </>
     )
