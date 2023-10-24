@@ -44,7 +44,7 @@ export default function Header({backgroundColor, ...props}) {
           acount text,
           userName text,
           password text,
-          url int,
+          url text,
           desc text,
           create_date text,
           update_date text
