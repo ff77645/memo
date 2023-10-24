@@ -1,13 +1,80 @@
-import React, {useState} from 'react';
-import {View, Text, TextInput,ScrollView} from 'react-native';
+import React, {useState,useCallback} from 'react';
+import {View, Text, TextInput, ScrollView, Alert, ToastAndroid} from 'react-native';
 import IconButton from '../../components/IconButton';
 import Header from './Header';
 import Icon from 'react-native-vector-icons/Ionicons';
+import ModalAction from '../../components/ModalAction';
+import {List} from 'react-native-paper';
+import {useFocusEffect} from '@react-navigation/native'
+import {openDatabase} from 'expo-sqlite'
+import { dbName } from '../../config/config';
+import { executeSql } from '../../utils';
+
+const db = openDatabase(dbName)
+let currentTag = {}
 
 export default function TagManage({navigation}) {
-  const handleAddTag = val => {
-    console.log({val});
+  const [showModal, setShowModal] = useState(false);
+  const [showEditModal,setShowEditModal] = useState(false)
+  const [editValue,setEditValue] = useState('edit value')
+  const [tagList,setTagList] = useState([])
+  
+  
+  const getTagList = async ()=>{
+    const data = await executeSql(db,'select * from tags')
+    setTagList(data._array)
+  }
+  
+  
+
+  const onEditTag = () => {
+    setShowModal(false)
+    setShowEditModal(true)
   };
+
+  const handleDelete = async () => {
+    console.log('handleDelete');
+    await executeSql(db,`delete from tags where id = ?`,[currentTag.id])
+    getTagList()
+ 
+  };
+
+  const onDeleteTag = () => {
+    setShowModal(false);
+    Alert.alert('确定删除标签?', '', [
+      {
+        text: '取消',
+        style: 'cancel',
+      },
+      {text: '删除', onPress: handleDelete},
+    ]);
+  };
+  const updateTag = async ()=>{
+    if(!editValue) return ToastAndroid.show('标签名称不能为空',ToastAndroid.SHORT)
+    console.log({editValue,currentTag});
+    await executeSql(db,`update tags set text = ? where id = ?`,[editValue,currentTag.id])
+    getTagList()
+    setShowEditModal(false)
+  }
+
+  const onOperation = item =>{
+    currentTag= item
+    setEditValue(item.text)
+    setShowModal(true)
+  }
+
+  const handleAddTag = async val => {
+    if(val === '') return ToastAndroid.show('标签名称不能为空',ToastAndroid.SHORT)
+    const date = Date.now() + ''
+    await executeSql(db,'insert into tags (text,create_date,update_date) values (?,?,?)',[val,date,date])
+    getTagList()
+  };
+
+  useFocusEffect(useCallback(()=>{
+    console.log('screen focus');
+    getTagList()
+  },[]))
+
   return (
     <View
       style={{
@@ -18,45 +85,119 @@ export default function TagManage({navigation}) {
       <TagNameInput onConfirm={handleAddTag} />
       <ScrollView
         style={{
-          flex:1,
+          flex: 1,
         }}
       >
-        <TagItem/>
+        {
+          tagList.map(item=>(
+            <TagItem key={item.id} item={item} onOperation={onOperation} />
+          ))
+        }
       </ScrollView>
+      <ModalAction
+        visible={showModal}
+        transparent
+        animationType="fade "
+        onClose={() => setShowModal(false)}>
+        <View
+          style={{
+            width: '100%',
+            height: '100%',
+            backgroundColor: 'rgba(0,0,0,.5)',
+            display: 'flex',
+            justifyContent: 'center',
+          }}>
+          <View
+            style={{
+              backgroundColor: '#fff',
+              marginHorizontal: 30,
+              borderRadius: 6,
+              padding: 20,
+            }}>
+            <List.Item title="编辑" onPress={onEditTag} />
+            <List.Item title="删除" onPress={onDeleteTag} />
+          </View>
+        </View>
+      </ModalAction>
+      <ModalAction
+        visible={showEditModal}
+        transparent
+        animationType="fade "
+        onClose={() => setShowEditModal(false)}>
+        <View
+          style={{
+            width: '100%',
+            height: '100%',
+            backgroundColor: 'rgba(0,0,0,.5)',
+            display: 'flex',
+            justifyContent: 'center',
+          }}>
+          <View
+            style={{
+              backgroundColor: '#fff',
+              marginHorizontal: 30,
+              borderRadius: 6,
+              padding: 20,
+            }}>
+                <Text style={{color:'#333',fontSize:18}}>编辑</Text>
+              <TextInput
+                value={editValue}
+                onChangeText={setEditValue}
+                style={{
+                  borderBottomWidth:1,
+                  borderColor:'#b33939',
+                  borderStyle:'solid',
+                  marginTop:15,
+                }}
+              ></TextInput>
+              <View
+                style={{
+                  display:'flex',
+                  alignItems:'flex-end',
+                  marginTop:20,
+                  
+                }}
+              >
+                <Text 
+                  style={{
+                    fontSize:16,
+                    color:'#1e90ff',
+                    marginRight:6,
+                  }}
+                  onPress={updateTag}
+                >确定</Text>
+              </View>
+          </View>
+        </View>
+      </ModalAction>
     </View>
   );
 }
 
-function ModalAction(){
-
-  return (
-    <View>
-      
-    </View>
-  )
-}
-
-function TagItem({item}){
-  const tagOpreation = ()=>{}
+function TagItem({item, onOperation}) {
   return (
     <View
       style={{
-        display:'flex',
-        flexDirection:'row',
-        alignItems:'center',
-        paddingVertical:12,
-        paddingHorizontal:20,
-        gap:20,
+        display: 'flex',
+        flexDirection: 'row',
+        alignItems: 'center',
+        paddingVertical: 12,
+        paddingHorizontal: 20,
+        gap: 20,
         borderBottomWidth: 1,
         borderColor: '#dadada',
         borderStyle: 'solid',
-      }}
-    >
-      <Icon name="bookmark-outline" size={24} color="#666"/>
-      <Text style={{color:'#333',fontSize:16,flex:1,}}>tabName</Text>
-      <IconButton onPress={tagOpreation} name="ellipsis-vertical" size={24} color="#666"/>
+      }}>
+      <Icon name="bookmark-outline" size={24} color="#666" />
+      <Text style={{color: '#333', fontSize: 16, flex: 1}}>{item.text}</Text>
+      <IconButton
+        onPress={()=>onOperation(item)}
+        name="ellipsis-vertical"
+        size={24}
+        color="#666"
+      />
     </View>
-  )
+  );
 }
 
 function TagNameInput({onConfirm}) {
@@ -81,7 +222,10 @@ function TagNameInput({onConfirm}) {
         placeholder="添加新标签"
         style={{flex: 1, fontSize: 16}}></TextInput>
       <IconButton
-        onPress={() => onConfirm(value)}
+        onPress={() => {
+          onConfirm(value)
+          setValue('')
+        }}
         name="checkmark"
         size={26}
         color="#666"></IconButton>

@@ -6,12 +6,14 @@ import {
   View,
   TouchableOpacity,
   ToastAndroid,
+  TouchableWithoutFeedback,
 } from 'react-native'
 import Header from "./Header";
 import { TextInput } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {openDatabase} from 'expo-sqlite'
 import {executeSql} from '../../utils'
+import IconButton from "../../components/IconButton";
 
 const formDataRaw = {
   title:'',
@@ -37,7 +39,6 @@ export default function RecordAdd({ navigation,route }) {
     return true
   })
   const [opreationType,setOpreationType] = useState(isDisable ? 'preview' : 'edit')
-
 
   const goBack = () => {
     navigation.goBack()
@@ -129,7 +130,16 @@ export default function RecordAdd({ navigation,route }) {
   useEffect(()=>{
     route.params && route.params.id && getData(route.params.id)
   },[])
-  
+  const [showPassword,setShowpassword] = useState(false)
+  const handleRefreshPassword = ()=>{
+
+  }
+  const handleCopy = ()=>{}
+  const passwordRight = ()=>{
+    if(isDisable) return <PasswordRightOnDisable visible={showPassword} onCopye={handleCopy} onToggleVisible={()=>setShowpassword(!showPassword)}/>
+    return (<IconButton style={{marginRight:-30}} onPress={handleRefreshPassword} name="sync-outline" size={20}/>)
+  }
+
   return (
     <View>
       <Header 
@@ -170,9 +180,12 @@ export default function RecordAdd({ navigation,route }) {
         <TextInput
           {...inputProps}
           label="密码"
-          secureTextEntry={false}
+          secureTextEntry={showPassword}
           value={formData.password}
-          right={<TextInput.Icon onPress={passwordRefresh} icon={isDisable ? 'eye' : ()=>(<Icon name="sync-outline" size={20}/>)}/>}
+          right={<TextInput.Icon rippleColor="transparent" style={{
+            width:90,
+            paddingRight:25,
+          }} icon={passwordRight}/>}
           onChangeText={val=>onChangeFormData('password',val)}
         ></TextInput>
       </InputItem>
@@ -192,6 +205,28 @@ export default function RecordAdd({ navigation,route }) {
           onChangeText={val=>onChangeFormData('desc',val)}
         ></TextInput>
       </InputItem>
+    </View>
+  )
+}
+
+function PasswordRightOnDisable({
+  onCopye,
+  visible,
+  onToggleVisible,
+}){
+
+  return (
+    <View
+      style={{
+        display:'flex',
+        flexDirection:'row',
+        flexWrap:'nowrap',
+        alignItems:'center',
+        gap:10,
+      }}
+    >
+      <IconButton onPress={onToggleVisible} name={visible ? 'eye-outline' : 'eye-off-outline'} size={20}></IconButton>
+      <IconButton  onPress={onCopye} name="copy-outline" size={20}></IconButton>
     </View>
   )
 }

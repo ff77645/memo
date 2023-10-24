@@ -94,7 +94,7 @@ function Preview({
         >
             <IconButton onPress={() => setVisible(true)} name="ellipsis-vertical" size={20} color="#fff"></IconButton>
         </View>
-        <ModalAction visible={visible} onClose={() => setVisible(false)}>
+        <ModalAction transparent visible={visible} onClose={() => setVisible(false)}>
             <View
                 style={{
                     position:'absolute',

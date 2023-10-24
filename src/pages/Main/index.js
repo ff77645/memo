@@ -1,4 +1,7 @@
-import React from "react";
+import React,{
+    useCallback,
+    useState,
+} from "react";
 import {
     View,
     Text,
@@ -13,6 +16,10 @@ import Record from "../Record";
 import DrawerContent from './DrawerContent'
 import Icon from 'react-native-vector-icons/Ionicons'
 import Empty from "../../components/Empty";
+import {openDatabase} from 'expo-sqlite'
+import {executeSql} from '../../utils'
+import { dbName } from "../../config/config";
+import {useFocusEffect} from '@react-navigation/native'
 
 const Drawer = createDrawerNavigator();
 
@@ -64,7 +71,18 @@ const fixedScreens =[
     },
 ]
 
+const db = openDatabase(dbName)
+
 export default function Main({navigation}) {
+
+    const [tags,setTags] = useState([])
+    const getTags = async ()=>{
+        const data = await executeSql(db,`select * from tags`)
+        setTags(data._array)
+    }
+    useFocusEffect(useCallback(()=>{
+        getTags()
+    },[]))
 
     const tagCategray = [
         {
@@ -100,12 +118,12 @@ export default function Main({navigation}) {
                 }}
             />
             {
-                tagCategray.map(item=>(
+                tags.map(item=>(
                     <Drawer.Screen
-                        key={item.key}
-                        name={item.name}
+                        key={item.id}
+                        name={item.text}
                         initialParams={{
-                            type:item.key
+                            type:item.id
                         }}
                         component={Record}
                         options={{
@@ -113,7 +131,7 @@ export default function Main({navigation}) {
                                 return (<Icon name="bookmark-outline" color={color} size={size} />)
                             },
                             title:'record',
-                            drawerLabel:item.name,
+                            drawerLabel:item.text,
                         }}
                     />
                 ))

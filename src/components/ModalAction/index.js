@@ -5,9 +5,9 @@ import {
 } from 'react-native'
 
 
-export default function ModalAction({visible, onClose, children}) {
+export default function ModalAction({onClose, children,...props}) {
     return (
-      <Modal visible={visible} transparent>
+      <Modal {...props}>
         <TouchableWithoutFeedback onPress={onClose}>
           <View
             style={{
