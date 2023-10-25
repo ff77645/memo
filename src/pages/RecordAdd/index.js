@@ -14,6 +14,12 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import {openDatabase} from 'expo-sqlite'
 import {executeSql} from '../../utils'
 import IconButton from "../../components/IconButton";
+import {setStringAsync} from 'expo-clipboard'
+import {
+  authenticateAsync,
+  getEnrolledLevelAsync,
+  hasHardwareAsync,
+} from 'expo-local-authentication'
 
 const formDataRaw = {
   title:'',
@@ -134,9 +140,17 @@ export default function RecordAdd({ navigation,route }) {
   const handleRefreshPassword = ()=>{
 
   }
-  const handleCopy = ()=>{}
+  const onToggleVisible = async ()=>{
+    setShowpassword(!showPassword)
+    const auth = await hasHardwareAsync()
+    console.log({auth});
+  }
+  const handleCopy = async ()=>{
+    await setStringAsync(formData.password)
+    ToastAndroid.show('复制成功',ToastAndroid.SHORT)
+  }
   const passwordRight = ()=>{
-    if(isDisable) return <PasswordRightOnDisable visible={showPassword} onCopye={handleCopy} onToggleVisible={()=>setShowpassword(!showPassword)}/>
+    if(isDisable) return <PasswordRightOnDisable visible={showPassword} onCopye={handleCopy} onToggleVisible={onToggleVisible}/>
     return (<IconButton style={{marginRight:-30}} onPress={handleRefreshPassword} name="sync-outline" size={20}/>)
   }
 
@@ -180,7 +194,7 @@ export default function RecordAdd({ navigation,route }) {
         <TextInput
           {...inputProps}
           label="密码"
-          secureTextEntry={showPassword}
+          secureTextEntry={!showPassword}
           value={formData.password}
           right={<TextInput.Icon rippleColor="transparent" style={{
             width:90,
@@ -225,7 +239,7 @@ function PasswordRightOnDisable({
         gap:10,
       }}
     >
-      <IconButton onPress={onToggleVisible} name={visible ? 'eye-outline' : 'eye-off-outline'} size={20}></IconButton>
+      <IconButton onPress={onToggleVisible} name={visible ? 'eye-off-outline' : 'eye-outline'} size={20}></IconButton>
       <IconButton  onPress={onCopye} name="copy-outline" size={20}></IconButton>
     </View>
   )
