@@ -18,6 +18,7 @@ import AddRecord from "./src/pages/AddRecord"
 import Main from './src/pages/Main';
 import RecordAdd from './src/pages/RecordAdd';
 import TagManage from './src/pages/TagManage';
+import Setting from './src/pages/Setting';
 
 const RootStack = createNativeStackNavigator()
 
@@ -27,6 +28,13 @@ function App() {
     {
       name: 'Main',
       component: Main,
+      options: {
+        headerShown: false
+      }
+    },
+    {
+      name: 'Setting',
+      component: Setting,
       options: {
         headerShown: false
       }

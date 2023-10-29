@@ -81,7 +81,7 @@ export default function TagManage({navigation}) {
         height: '100%',
         display: 'flex',
       }}>
-      <Header onBack={() => navigation.goBack()}></Header>
+      <Header onBack={() => navigation.goBack()} title="编辑标签"></Header>
       <TagNameInput onConfirm={handleAddTag} />
       <ScrollView
         style={{

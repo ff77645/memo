@@ -58,17 +58,17 @@ const fixedScreens =[
     //         },
     //     },
     // },
-    {
-        name:'设置',
-        component:Article,
-        options:{
-            title:'system',
-            drawerLabel:'设置',
-            drawerIcon({focused,color,size}){
-                return (<Icon name="settings-outline" color={color} size={size} />)
-            },
-        },
-    },
+    // {
+    //     name:'设置',
+    //     component:Article,
+    //     options:{
+    //         title:'system',
+    //         drawerLabel:'设置',
+    //         drawerIcon({focused,color,size}){
+    //             return (<Icon name="settings-outline" color={color} size={size} />)
+    //         },
+    //     },
+    // },
 ]
 
 const db = openDatabase(dbName)
@@ -164,8 +164,24 @@ export default function Main({navigation}) {
                     />
                 ))
             }
- 
-            
+            <Drawer.Screen
+                name="设置"
+                component={Empty}
+                options={{
+                    title:'system',
+                    drawerLabel:'设置',
+                    drawerIcon({focused,color,size}){
+                        return <Icon name="settings-outline" color={color} size={size} />
+                    },
+                }}
+                listeners={({navigation:n})=>({
+                    drawerItemPress(e){
+                        e.preventDefault()
+                        n.closeDrawer();
+                        navigation.navigate('Setting')
+                    },
+                })}
+            />
         </Drawer.Navigator>
     );
 }

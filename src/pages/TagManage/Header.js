@@ -15,7 +15,8 @@ const fontStyle = {
 };
 
 export default function Header({
-    onBack
+    onBack,
+    title
 }) {
   return (
     <BaseHeader>
@@ -47,7 +48,7 @@ export default function Header({
                 fontWeight: 500,
               },
             ]}>
-            编辑标签
+            {title}
           </Text>
         </View>
       </View>
