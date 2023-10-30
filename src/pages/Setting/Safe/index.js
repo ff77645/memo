@@ -23,7 +23,7 @@ export default function Safe({navigation}){
         display: 'flex',
       }}
     >
-      <Header title="数据库" onBack={()=>navigation.goBack()}/>
+      <Header title="安全" onBack={()=>navigation.goBack()}/>
       <View>
         <View
           style={{
