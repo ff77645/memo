@@ -10,6 +10,7 @@ import { StatusBar, StyleSheet, Text, useColorScheme, View } from 'react-native'
 import { NavigationContainer } from '@react-navigation/native'
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
+import {activateKeepAwakeAsync} from 'expo-keep-awake'
 
 import Animation from './src/pages/Animation'
 import Home from './src/pages/Home'
@@ -85,7 +86,7 @@ function App() {
       }
     },
   ]
-
+  activateKeepAwakeAsync('gobal')
   return (
     <NavigationContainer>
       <RootStack.Navigator

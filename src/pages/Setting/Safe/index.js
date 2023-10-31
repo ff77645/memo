@@ -1,11 +1,11 @@
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import Header from "../../TagManage/Header";
 import { View,Text } from "react-native";
 import {
   List,
   Switch,
 } from 'react-native-paper';
-
+import { useConfig } from "../../../hooks";
 
 
 export default function Safe({navigation}){
@@ -15,7 +15,18 @@ export default function Safe({navigation}){
   const [isHoldLightUp,setIsHoldLightUp] = useState(false)
   const [isAllowScreenshot,setIsAllowScreenshot] = useState(false)
   const [isBiometrics,setIsBiometrics] = useState(false)
+  const [config,setConfig] = useConfig()
+  const onChange = (key,value)=>{
+    const data = {
+      ...config,
+      [key]:value,
+    }
+    setConfig(data)
+  }
 
+  useEffect(()=>{
+    console.log({config,setConfig});
+  },[])
   return (
     <View
       style={{
@@ -39,7 +50,7 @@ export default function Safe({navigation}){
           <List.Item title="更改主密码"></List.Item>
           <List.Item 
             title="快速登陆"
-            right={()=><Switch value={isFashLogin} onValueChange={()=>setIsFastLogin(!isFashLogin)} color="#c23616"></Switch>}
+            right={()=><Switch value={config.fastLogin} onValueChange={()=>onChange('fastLogin',!config.fastLogin)} color="#c23616"></Switch>}
           ></List.Item>
           <List.Item 
             title="自动退出" 
