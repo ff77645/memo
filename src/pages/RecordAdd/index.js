@@ -19,6 +19,8 @@ import {
   authenticateAsync,
   getEnrolledLevelAsync,
   hasHardwareAsync,
+  isEnrolledAsync,
+  supportedAuthenticationTypesAsync,
 } from 'expo-local-authentication'
 
 const formDataRaw = {
@@ -141,9 +143,19 @@ export default function RecordAdd({ navigation,route }) {
 
   }
   const onToggleVisible = async ()=>{
+    // const auth = await hasHardwareAsync()
+    // const level = await getEnrolledLevelAsync()
+    // const EnrolledAsync = await isEnrolledAsync()
+    // const supportedAuth = await supportedAuthenticationTypesAsync()
+    // console.log({auth,level,EnrolledAsync,supportedAuth,});
+    if(showPassword) return setShowpassword(!showPassword)
+    const {success} = await authenticateAsync({
+      // cancelLabel:'取消',
+      // promptMessage:'',
+      // requireConfirmation:true,
+    })
+    if(!success) return
     setShowpassword(!showPassword)
-    const auth = await hasHardwareAsync()
-    console.log({auth});
   }
   const handleCopy = async ()=>{
     await setStringAsync(formData.password)
