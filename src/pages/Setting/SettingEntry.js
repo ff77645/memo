@@ -3,6 +3,7 @@ import {View,Text} from 'react-native';
 import {List} from 'react-native-paper';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Header from '../TagManage/Header';
+import { useConfig } from "../../hooks";
 
 
 

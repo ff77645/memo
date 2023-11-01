@@ -55,16 +55,16 @@ export default function Safe({navigation}){
           <List.Item 
             title="自动退出" 
             description={()=><Text>当在屏幕关闭或在60秒后进入后台时</Text>}
-            right={()=><Switch value={isAutoLoginOut} onValueChange={()=>setIsAutoLoginOut(!isAutoLoginOut)} color="#c23616"></Switch>}
+            right={()=><Switch value={config.autoLogout} onValueChange={()=>onChange('autoLogout',!config.autoLogout)} color="#c23616"></Switch>}
           ></List.Item>
           <List.Item 
             title="保持亮屏" 
             description={()=><Text>当浏览或编辑条目时屏幕不进入休眠状态</Text>}
-            right={()=><Switch value={isHoldLightUp} onValueChange={()=>setIsHoldLightUp(!isHoldLightUp)} color="#c23616"></Switch>}
+            right={()=><Switch value={config.holdLightUp} onValueChange={()=>onChange('holdLightUp',!config.holdLightUp)} color="#c23616"></Switch>}
           ></List.Item>
           <List.Item 
             title="允许截图" 
-            right={()=><Switch value={isAllowScreenshot} onValueChange={()=>setIsAllowScreenshot(!isAllowScreenshot)} color="#c23616"></Switch>}
+            right={()=><Switch value={config.allowScreenshot} onValueChange={()=>onChange('allowScreenshot',!config.allowScreenshot)} color="#c23616"></Switch>}
           ></List.Item>
         </View>
         <View
@@ -74,7 +74,7 @@ export default function Safe({navigation}){
         >
           <List.Item 
             title="生物认证" 
-            right={()=><Switch value={isBiometrics} onValueChange={()=>setIsBiometrics(!isBiometrics)} color="#c23616"></Switch>}
+            right={()=><Switch value={config.biometrics} onValueChange={()=>onChange('biometrics',!config.biometrics)} color="#c23616"></Switch>}
           ></List.Item>
           <List.Item 
             title="清除剪切板" 

@@ -1,44 +1,29 @@
 import {atom,useAtom} from 'jotai'
-import {useState} from 'react'
+import {useEffect, useState} from 'react'
 import {getItemAsync,setItemAsync,deleteItemAsync} from 'expo-secure-store'
 import {appConfigKey,appConfigValueDefault} from '../config/config'
 
-// deleteItemAsync(appConfigKey)
-// let userConfig = getItemAsync(appConfigKey)
-// console.log(1,userConfig);
-// if(!userConfig){
-//   setItemAsync(appConfigKey,JSON.stringify(appConfigValueDefault))
-//   userConfig = appConfigValueDefault
-// }
+const appConfigValue = atom(appConfigValueDefault)
 
-const data = atom(
-    async ()=>{
-    const userConfig = await getItemAsync(appConfigKey)
-    if(userConfig) return JSON.parse(userConfig)
-    await setItemAsync(appConfigKey,JSON.stringify(appConfigValueDefault))
-    return appConfigKey
+appConfigValue.onMount = setAtom =>{
+  getItemAsync(appConfigKey).then(value=>{
+    if(value){
+      setAtom(JSON.parse(value))
+    }
+  })
+  console.log('onMount');
+  return ()=>{
+    console.log('onUnMount');
   }
-)
-// const configAtom = atom(
-//   async ()=>{
-//     const userConfig = await getItemAsync(appConfigKey)
-//     if(userConfig) return JSON.parse(userConfig)
-//     await setItemAsync(appConfigKey,JSON.stringify(appConfigValueDefault))
-//     return appConfigKey
-//   },
-//   async (get,set,value)=>{
-//     console.log('set value',value);
-//     setItemAsync(appConfigKey,JSON.stringify(value))
-//   }
-// )
+}
 
 const configAtom = atom(
-  get=>get(data),
-  (get,set,value)=>{
-    set(data,value)
+  get=>get(appConfigValue),
+  async (get,set,value)=>{
+    await setItemAsync(appConfigKey,JSON.stringify(value))
+    set(appConfigValue,value)
   }
 )
-
 
 export const useConfig = ()=>{
   return useAtom(configAtom)

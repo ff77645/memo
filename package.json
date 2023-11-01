@@ -20,6 +20,7 @@
     "expo-clipboard": "~4.3.1",
     "expo-crypto": "~12.4.1",
     "expo-local-authentication": "~13.4.1",
+    "expo-screen-capture": "~5.3.0",
     "expo-secure-store": "~12.3.1",
     "expo-sqlite": "~11.3.3",
     "jotai": "^2.5.0",
