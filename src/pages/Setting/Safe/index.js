@@ -9,12 +9,6 @@ import { useConfig } from "../../../hooks";
 
 
 export default function Safe({navigation}){
-
-  const [isFashLogin,setIsFastLogin] = useState(false)
-  const [isAutoLoginOut,setIsAutoLoginOut] = useState(false)
-  const [isHoldLightUp,setIsHoldLightUp] = useState(false)
-  const [isAllowScreenshot,setIsAllowScreenshot] = useState(false)
-  const [isBiometrics,setIsBiometrics] = useState(false)
   const [config,setConfig] = useConfig()
   const onChange = (key,value)=>{
     const data = {

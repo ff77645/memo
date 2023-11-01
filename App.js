@@ -12,7 +12,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import {activateKeepAwakeAsync} from 'expo-keep-awake'
 import { useConfig } from './src/hooks';
-import { usePreventScreenCapture,addScreenshotListener,preventScreenCaptureAsync } from 'expo-screen-capture'
+import { usePreventScreenCapture,addScreenshotListener,preventScreenCaptureAsync,allowScreenCaptureAsync } from 'expo-screen-capture'
 
 import Animation from './src/pages/Animation'
 import Home from './src/pages/Home'
@@ -89,14 +89,12 @@ function App() {
   const [appCofnig] = useConfig()
 
   useEffect(()=>{
-    if(!appCofnig.allowScreenshot){
-      preventScreenCaptureAsync('blobal')
-      const subscription = addScreenshotListener(()=>{
-        console.log('截图了截图了');
-      })
-      return ()=>subscription.remove()
+    if(appCofnig.allowScreenshot){
+      allowScreenCaptureAsync('global')
+    }else{
+      preventScreenCaptureAsync('global')
     }
-  },[])
+  },[appCofnig.allowScreenshot])
   
   activateKeepAwakeAsync('gobal')
   return (
