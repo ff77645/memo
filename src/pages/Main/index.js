@@ -9,9 +9,6 @@ import {
 import {
     createDrawerNavigator,
 } from '@react-navigation/drawer';
-import { getHeaderTitle } from '@react-navigation/elements';
-import { TouchableWithoutFeedback } from "react-native-gesture-handler";
-import { Button } from "react-native-paper";
 import Record from "../Record";
 import DrawerContent from './DrawerContent'
 import Icon from 'react-native-vector-icons/Ionicons'
@@ -84,29 +81,19 @@ export default function Main({navigation}) {
         getTags()
     },[]))
 
-    const tagCategray = [
-        {
-            name:'账号',
-            key:'acount'
-        },
-        {
-            name:'银行卡',
-            key:'bankcard'
-        },
-    ]
-
     return (
         <Drawer.Navigator
-            defaultStatus="open"
+            defaultStatus="closed"
             screenOptions={{
                 headerShown: false,
+                drawerType:'back',
             }}
             drawerContent={DrawerContent}
         >
             <Drawer.Screen
                 name="全部"
                 initialParams={{
-                    type:''
+                    tag_id:''
                 }}
                 component={Record}
                 options={{
@@ -123,7 +110,7 @@ export default function Main({navigation}) {
                         key={item.id}
                         name={item.text}
                         initialParams={{
-                            type:item.id
+                            tag_id:item.id
                         }}
                         component={Record}
                         options={{
@@ -195,34 +182,3 @@ function Feed() {
         </View>
     )
 }
-function Article() {
-    return (
-        <View>
-            <Text>Article</Text>
-        </View>
-    )
-}
-function MyHeader({
-    title,
-    style,
-    openDrawer
-}) {
-
-    return (
-        <View style={[
-            style,
-            {
-                display: 'flex',
-                flexDirection: 'row',
-                flexWrap: 'nowrap',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-            }
-        ]}>
-            <Button onPress={openDrawer}>打开</Button>
-            <Text>{title}</Text>
-            <View></View>
-        </View>
-    )
-}
-

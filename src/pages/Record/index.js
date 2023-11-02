@@ -19,14 +19,14 @@ export default function Record({navigation,route}){
         // console.log('addRecord');
         navigation.navigate('RecordAdd',{
             type:'edit',
-            type:route.params.type,
+            tag_id:route.params.tag_id,
         })
     }
     const getRecords = async ()=>{
-        const type = route.params.type
+        const tag_id = route.params.tag_id
         let records 
-        if(type){
-            records = await executeSql(db,'select * from records where type = ?',[type])
+        if(tag_id){
+            records = await executeSql(db,'select * from records where tag_id = ?',[tag_id])
         }else{
             records = await executeSql(db,'select * from records')
         }
@@ -44,7 +44,7 @@ export default function Record({navigation,route}){
         navigation.navigate('RecordAdd',{
             type:'preview',
             id:item.id,
-            type:route.params.type,
+            tag_id:route.params.tag_id,
         })
     }
     const onSearch = val =>{
@@ -52,6 +52,12 @@ export default function Record({navigation,route}){
         setRecordList(dataRaw.filter(item=>{
             return item.title.includes(val) || item.acount.includes(val)
         }))
+    }
+    const handleLogout = ()=>{
+        navigation.reset({
+            index:0,
+            routes:[{name:'Login'}]
+        })
     }
 
     return (
@@ -65,6 +71,7 @@ export default function Record({navigation,route}){
                 title={route.name}
                 openDrawer={navigation.openDrawer}
                 onSearch={onSearch}
+                onLogout={handleLogout}
             ></Header>
             <View
                 style={{

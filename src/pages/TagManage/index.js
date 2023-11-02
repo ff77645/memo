@@ -9,6 +9,7 @@ import {useFocusEffect} from '@react-navigation/native'
 import {openDatabase} from 'expo-sqlite'
 import { dbName } from '../../config/config';
 import { executeSql } from '../../utils';
+import {randomUUID} from 'expo-crypto'
 
 const db = openDatabase(dbName)
 let currentTag = {}
@@ -66,12 +67,12 @@ export default function TagManage({navigation}) {
   const handleAddTag = async val => {
     if(val === '') return ToastAndroid.show('标签名称不能为空',ToastAndroid.SHORT)
     const date = Date.now() + ''
-    await executeSql(db,'insert into tags (text,create_date,update_date) values (?,?,?)',[val,date,date])
+    const id = randomUUID()
+    await executeSql(db,'insert into tags (id,text,create_date,update_date) values (?,?,?,?)',[id,val,date,date])
     getTagList()
   };
 
   useFocusEffect(useCallback(()=>{
-    console.log('screen focus');
     getTagList()
   },[]))
 

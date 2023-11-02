@@ -8,7 +8,9 @@ const appConfigValue = atom(appConfigValueDefault)
 appConfigValue.onMount = setAtom =>{
   getItemAsync(appConfigKey).then(value=>{
     if(value){
-      setAtom(JSON.parse(value))
+      const config = JSON.parse(value)
+      const data = Object.assign({},appConfigValueDefault,config)
+      setAtom(data)
     }
   })
   console.log('onMount');

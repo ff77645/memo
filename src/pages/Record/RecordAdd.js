@@ -21,7 +21,7 @@ export default function RecordAdd({onPress}){
           bottom:20,
         }}
       >
-        <Icon name="add-circle" color="#0984e3" size={50} />
+        <Icon name="add-circle" color="#0984e3" size={68} />
       </View>
     </TouchableWithoutFeedback>
   )

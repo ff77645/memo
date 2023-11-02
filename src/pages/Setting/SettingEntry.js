@@ -15,7 +15,7 @@ export default function SettingEntry({navigation}){
         display: 'flex',
       }}
     >
-      <Header onBack={() => navigation.goBack()} title="编辑标签"></Header>
+      <Header onBack={() => navigation.goBack()} title="设置"></Header>
       <List.Item
         title="数据库"
         onPress={()=>navigation.navigate('DataBase')}

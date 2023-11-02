@@ -25,7 +25,7 @@ export default function Header({
           flexRowAlignCenterBetween,
           {
             flex: 1,
-            paddingHorizontal: 16,
+            paddingHorizontal: 10,
           },
         ]}>
         <View
@@ -34,7 +34,7 @@ export default function Header({
             flexDirection: 'row',
             flexWrap: 'nowrap',
             alignItems: 'center',
-            gap: 16,
+            gap: 10,
           }}>
           <IconButton
             onPress={onBack}

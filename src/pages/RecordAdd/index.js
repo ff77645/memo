@@ -6,7 +6,6 @@ import {
   View,
   TouchableOpacity,
   ToastAndroid,
-  TouchableWithoutFeedback,
 } from 'react-native'
 import Header from "./Header";
 import { TextInput } from 'react-native-paper';
@@ -17,11 +16,9 @@ import IconButton from "../../components/IconButton";
 import {setStringAsync} from 'expo-clipboard'
 import {
   authenticateAsync,
-  getEnrolledLevelAsync,
-  hasHardwareAsync,
-  isEnrolledAsync,
-  supportedAuthenticationTypesAsync,
 } from 'expo-local-authentication'
+import {randomUUID} from 'expo-crypto'
+import {generateRandomPassword} from '../../utils'
 
 const formDataRaw = {
   title:'',
@@ -37,7 +34,11 @@ const formCheckStateRaw = {
 }
 
 const db = openDatabase('db.db')
-
+const generatePassword = {
+  length:8,
+  hasSpecial:false,
+  times:0,
+}
 
 export default function RecordAdd({ navigation,route }) {
   const [formData,setFormData] = useState(formDataRaw)
@@ -72,9 +73,15 @@ export default function RecordAdd({ navigation,route }) {
     editable:!isDisable,
   }
 
-  const passwordRefresh = ()=>{
-    // const val = Math.floor(Math.random() * 10000000 + Math.random() * 1000) + ''
-    // onChangeFormData('password',val)
+  const passwordRefresh = async ()=>{
+    const password = generateRandomPassword(generatePassword.length,generatePassword.hasSpecial)
+    console.log({password});
+    if(generatePassword.times++ >= 1){
+      generatePassword.length = generatePassword.length === 8 ? 12 : 8
+      generatePassword.times = 0
+    }
+    generatePassword.hasSpecial = !generatePassword.hasSpecial
+    onChangeFormData('password',password)
   }
 
   // 字段检查
@@ -98,7 +105,7 @@ export default function RecordAdd({ navigation,route }) {
     if(!checkField()) return
     const date = Date.now() + ''
     const {title,acount,userName,password,url,desc} = formData
-    console.log('route.params.type',route.params.type);
+    console.log('route.params.tag_id',route.params.tag_id);
     // 有id修改 无id添加
     if(route.params && route.params.id){
       await executeSql(db,
@@ -107,9 +114,10 @@ export default function RecordAdd({ navigation,route }) {
       )
       ToastAndroid.showWithGravity('修改成功',ToastAndroid.SHORT,ToastAndroid.CENTER)
     }else{
+      const id = randomUUID()
       await executeSql(db,
-        `insert into records (type,title,acount,userName,password,url,desc,create_date,update_date) values (?,?,?,?,?,?,?,?,?)`,
-        [route.params.type,title,acount,userName,password,url,desc,date,date]
+        `insert into records (id,tag_id,title,acount,userName,password,url,desc,create_date,update_date) values (?,?,?,?,?,?,?,?,?,?)`,
+        [id,route.params.tag_id,title,acount,userName,password,url,desc,date,date]
       )
       ToastAndroid.showWithGravity('添加成功',ToastAndroid.SHORT,ToastAndroid.CENTER)
     }
@@ -143,27 +151,14 @@ export default function RecordAdd({ navigation,route }) {
 
   }
   const onToggleVisible = async ()=>{
-    // const auth = await hasHardwareAsync()
-    // const level = await getEnrolledLevelAsync()
-    // const EnrolledAsync = await isEnrolledAsync()
-    // const supportedAuth = await supportedAuthenticationTypesAsync()
-    // console.log({auth,level,EnrolledAsync,supportedAuth,});
     if(showPassword) return setShowpassword(!showPassword)
-    const {success} = await authenticateAsync({
-      // cancelLabel:'取消',
-      // promptMessage:'',
-      // requireConfirmation:true,
-    })
+    const {success} = await authenticateAsync()
     if(!success) return
     setShowpassword(!showPassword)
   }
   const handleCopy = async ()=>{
     await setStringAsync(formData.password)
     ToastAndroid.show('复制成功',ToastAndroid.SHORT)
-  }
-  const passwordRight = ()=>{
-    if(isDisable) return <PasswordRightOnDisable visible={showPassword} onCopye={handleCopy} onToggleVisible={onToggleVisible}/>
-    return (<IconButton style={{marginRight:-30}} onPress={handleRefreshPassword} name="sync-outline" size={20}/>)
   }
 
   return (
@@ -206,12 +201,13 @@ export default function RecordAdd({ navigation,route }) {
         <TextInput
           {...inputProps}
           label="密码"
-          secureTextEntry={!showPassword}
+          keyboardType={isDisable ? 'default' : 'visible-password'}
+          secureTextEntry={isDisable && !showPassword}
           value={formData.password}
           right={<TextInput.Icon rippleColor="transparent" style={{
             width:90,
             paddingRight:25,
-          }} icon={passwordRight}/>}
+          }} icon={()=><PasswordRight visible={showPassword} isEdit={!isDisable} onCopye={handleCopy} onRefresh={passwordRefresh} onToggleVisible={onToggleVisible}/>}/>}
           onChangeText={val=>onChangeFormData('password',val)}
         ></TextInput>
       </InputItem>
@@ -235,9 +231,11 @@ export default function RecordAdd({ navigation,route }) {
   )
 }
 
-function PasswordRightOnDisable({
+function PasswordRight({
   onCopye,
   visible,
+  isEdit,
+  onRefresh,
   onToggleVisible,
 }){
 
@@ -251,7 +249,10 @@ function PasswordRightOnDisable({
         gap:10,
       }}
     >
-      <IconButton onPress={onToggleVisible} name={visible ? 'eye-off-outline' : 'eye-outline'} size={20}></IconButton>
+      {
+        isEdit ? <IconButton onPress={onRefresh} name="sync-outline" size={20}/>
+        :<IconButton onPress={onToggleVisible} name={visible ? 'eye-off-outline' : 'eye-outline'} size={20}></IconButton>
+      }
       <IconButton  onPress={onCopye} name="copy-outline" size={20}></IconButton>
     </View>
   )

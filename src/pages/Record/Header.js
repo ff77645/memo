@@ -20,7 +20,7 @@ const fontStyle = {
   fontSize: 18,
 };
 
-export default function Header({backgroundColor, ...props}) {
+export default function Header({backgroundColor,onLogout, ...props}) {
   const [visible, setVisible] = useState(false);
   const [isSearch, setIsSearch] = useState(false);
   const handleOption = () => {
@@ -38,8 +38,8 @@ export default function Header({backgroundColor, ...props}) {
       db,
       `
         create table if not exists records (
-          id integer primary key not null, 
-          type text,
+          id text primary key not null, 
+          tag_id text,
           title text,
           acount text,
           userName text,
@@ -65,7 +65,7 @@ export default function Header({backgroundColor, ...props}) {
       db,
       `
         create table if not exists tags (
-          id integer primary key not null, 
+          id text primary key not null, 
           text text,
           create_date text,
           update_date text
@@ -75,6 +75,15 @@ export default function Header({backgroundColor, ...props}) {
     console.log('创建成功');
     setVisible(!visible);
   };
+  const alterRecordsTable = async ()=>{
+    await executeSql(
+      db,
+      `
+        alter table records add test text default'123'
+      `,
+    );
+    console.log('创建成功');
+  }
 
   return (
     <>
@@ -108,6 +117,8 @@ export default function Header({backgroundColor, ...props}) {
           <List.Item title="删除记录表" onPress={deleteTable} />
           <List.Item title="创建标签表" onPress={createTagTable} />
           <List.Item title="删除标签表" onPress={deleteTagTable} />
+          <List.Item title="退出" onPress={onLogout} />
+          <List.Item title="修改记录表" onPress={alterRecordsTable} />
         </View>
       </ModalAction>
     </>
@@ -130,12 +141,12 @@ function DefaultView({openDrawer, title, setIsSearch}) {
           flexDirection: 'row',
           flexWrap: 'nowrap',
           alignItems: 'center',
-          gap: 16,
+          gap: 12,
         }}>
         <IconButton
           onPress={openDrawer}
           name="menu-outline"
-          size={20}
+          size={28}
           color="#fff"></IconButton>
         <Text
           style={[
@@ -186,7 +197,7 @@ function SearchView({onBack, onSearch}) {
         <IconButton
           onPress={handleBack}
           name="arrow-back-outline"
-          size={20}
+          size={26}
           color="#fff"></IconButton>
       </View>
       <TextInput

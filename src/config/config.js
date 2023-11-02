@@ -12,4 +12,5 @@ export const appConfigValueDefault = {
   holdLightUp:true,
   allowScreenshot:false,
   biometrics:false,
+  loginDate:'',
 }

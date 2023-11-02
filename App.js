@@ -1,18 +1,13 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- */
 import 'react-native-gesture-handler';
 import React,{useEffect} from 'react';
-import { StatusBar, StyleSheet, Text, useColorScheme, View } from 'react-native';
-import { NavigationContainer } from '@react-navigation/native'
+import { 
+  AppState,
+} from 'react-native';
+import { NavigationContainer,useNavigationContainerRef } from '@react-navigation/native'
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { SafeAreaProvider } from 'react-native-safe-area-context';
 import {activateKeepAwakeAsync} from 'expo-keep-awake'
 import { useConfig } from './src/hooks';
-import { usePreventScreenCapture,addScreenshotListener,preventScreenCaptureAsync,allowScreenCaptureAsync } from 'expo-screen-capture'
+import { preventScreenCaptureAsync,allowScreenCaptureAsync } from 'expo-screen-capture'
 
 import Animation from './src/pages/Animation'
 import Home from './src/pages/Home'
@@ -22,9 +17,25 @@ import Main from './src/pages/Main';
 import RecordAdd from './src/pages/RecordAdd';
 import TagManage from './src/pages/TagManage';
 import Setting from './src/pages/Setting';
+import Login from './src/pages/Login';
+import LoginFirst from './src/pages/LoginFirst';
 
 const RootStack = createNativeStackNavigator()
 const routes = [
+  {
+    name: 'Login',
+    component: Login,
+    options: {
+      headerShown: false
+    }
+  },
+  {
+    name: 'LoginFirst',
+    component: LoginFirst,
+    options: {
+      headerShown: false
+    }
+  },
   {
     name: 'Main',
     component: Main,
@@ -86,7 +97,9 @@ const routes = [
   },
 ]
 function App() {
-  const [appCofnig] = useConfig()
+  const [appCofnig,setConfig] = useConfig()
+  // const navigationRef = useNavigationContainerRef()
+  activateKeepAwakeAsync('global')
 
   useEffect(()=>{
     if(appCofnig.allowScreenshot){
@@ -95,12 +108,25 @@ function App() {
       preventScreenCaptureAsync('global')
     }
   },[appCofnig.allowScreenshot])
+
+  AppState.addEventListener('change',state=>{
+    // if(
+    //   state === 'background' && 
+    //   Date.now() - appCofnig.loginDate >= 1000 * 60
+    // ){
+    //   navigationRef.resetRoot({
+    //     index:0,
+    //     routes:[{name:'Login'}]
+    //   })
+    // }
+  })
   
-  activateKeepAwakeAsync('gobal')
   return (
-    <NavigationContainer>
+    <NavigationContainer 
+      // ref={navigationRef}
+    >
       <RootStack.Navigator
-        initialRouteName="Main"
+        initialRouteName="Login"
       >
         {
           routes.map(route => (

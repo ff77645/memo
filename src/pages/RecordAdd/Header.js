@@ -57,7 +57,7 @@ function Preview({
                 flexRowAlignCenterBetween,
                 {
                     flex:1,
-                    paddingHorizontal:20,
+                    paddingHorizontal:10,
                 }
             ]}
         >
@@ -67,10 +67,10 @@ function Preview({
                     flexDirection:'row',
                     flexWrap:'nowrap',
                     alignItems:'center',
-                    gap:20,
+                    gap:10,
                 }}
             >
-                <IconButton onPress={goBack} name="arrow-back-outline" size={28} color="#fff"></IconButton>
+                <IconButton onPress={goBack} name="arrow-back-outline" size={26} color="#fff"></IconButton>
                 <Text
                     style={[
                         fontStyle,
@@ -86,7 +86,7 @@ function Preview({
         </View>
         <View
             style={{
-                width:60,
+                paddingRight:10,
                 display:'flex',
                 flexDirection:'row',
                 justifyContent:'center',
@@ -127,7 +127,7 @@ function EditView({
                     flexRowAlignCenterBetween,
                     {
                         flex:1,
-                        paddingHorizontal:20,
+                        paddingHorizontal:10,
                     }
                 ]}
             >
@@ -137,7 +137,7 @@ function EditView({
                         flexDirection:'row',
                         flexWrap:'nowrap',
                         alignItems:'center',
-                        gap:20,
+                        gap:10,
                     }}
                 >
                     <IconButton onPress={goBack} name="close-outline" size={28} color="#fff"></IconButton>
@@ -148,10 +148,10 @@ function EditView({
             </View>
             <View
                 style={{
-                    width:60,
                     display:'flex',
                     flexDirection:'row',
                     justifyContent:'center',
+                    paddingRight:16,
                 }}
             >
                 <Text
