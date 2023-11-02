@@ -16,7 +16,6 @@ let dataRaw = []
 export default function Record({navigation,route}){
     const [recordList,setRecordList] = useState([])
     const addRecord = ()=>{
-        // console.log('addRecord');
         navigation.navigate('RecordAdd',{
             type:'edit',
             tag_id:route.params.tag_id,
@@ -35,7 +34,6 @@ export default function Record({navigation,route}){
     }
 
     useFocusEffect(useCallback(()=>{
-        console.log('screen focus');
         getRecords()
     },[]))
 
