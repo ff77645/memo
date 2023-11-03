@@ -4,16 +4,17 @@ import {
   TouchableWithoutFeedback,
 } from 'react-native'
 import Icon from 'react-native-vector-icons/Ionicons'
-import { ToastExample } from "../../NativeMoudles";
+import { ToastExample,ClipboardOwn } from "../../NativeMoudles";
 
 
 export default function RecordAdd({onPress}){
   const showToast = ()=>{
-    ToastExample.show('Awesome', ToastExample.SHORT);
+    // ToastExample.show('Awesome', ToastExample.SHORT);
+    ClipboardOwn.setString("Hellow world;")
   }
   return (
     <TouchableWithoutFeedback
-      onPress={showToast}
+      onPress={onPress}
     >
       <View
         style={{

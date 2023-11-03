@@ -1,8 +1,9 @@
 package com.memo;
+
 import android.content.res.Configuration;
 import expo.modules.ApplicationLifecycleDispatcher;
 import expo.modules.ReactNativeHostWrapper;
-import com.memo.ToastModulePackage;
+import com.memo.ReactNativePackage;
 
 import android.app.Application;
 import com.facebook.react.PackageList;
@@ -29,7 +30,7 @@ public class MainApplication extends Application implements ReactApplication {
           List<ReactPackage> packages = new PackageList(this).getPackages();
           // Packages that cannot be autolinked yet can be added manually here, for example:
           // packages.add(new MyReactNativePackage());
-          packages.add(new ToastModulePackage()); // <-- 添加这一行，类名替换成你的Package类的名字 name.
+          packages.add(new ReactNativePackage()); // <-- 添加这一行，类名替换成你的Package类的名字 name.
           return packages;
         }
 

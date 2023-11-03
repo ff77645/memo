@@ -7,17 +7,15 @@ import com.facebook.react.uimanager.ViewManager;
 import com.facebook.react.bridge.NativeModule;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContext;
-import com.facebook.react.bridge.ReactContextBaseJavaModule;
-import com.facebook.react.bridge.ReactMethod;
 
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
-import java.util.HashMap;
 
-public class ClipboardPackage {
+
+public class ReactNativePackage implements ReactPackage {
+
   @Override
   public List<ViewManager> createViewManagers(ReactApplicationContext reactContext) {
     return Collections.emptyList();
@@ -28,10 +26,8 @@ public class ClipboardPackage {
     List<NativeModule> modules = new ArrayList<>();
 
     modules.add(new ToastModule(reactContext));
+    modules.add(new Clipboarder(reactContext));
 
     return modules;
   }
 }
-
-
-
