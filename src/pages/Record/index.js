@@ -24,10 +24,12 @@ export default function Record({navigation,route}){
     const getRecords = async ()=>{
         const tag_id = route.params.tag_id
         let records 
-        if(tag_id){
-            records = await executeSql(db,'select * from records where tag_id = ?',[tag_id])
+        if(tag_id === '1'){
+            records = await executeSql(db,'select * from records where is_delete = 1')
+        }else if(tag_id){
+            records = await executeSql(db,'select * from records where tag_id = ? and is_delete = 0',[tag_id])
         }else{
-            records = await executeSql(db,'select * from records')
+            records = await executeSql(db,'select * from records where is_delete = 0')
         }
         dataRaw = records._array
         setRecordList(dataRaw)
@@ -38,7 +40,6 @@ export default function Record({navigation,route}){
     },[]))
 
     const clickRecord = item =>{
-        console.log({item});
         navigation.navigate('RecordAdd',{
             type:'preview',
             id:item.id,

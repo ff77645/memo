@@ -106,7 +106,10 @@ function Preview({
                 }}
             >
                 <List.Item title="清除历史记录" />
-                <List.Item title="删除" onPress={onDelete} />
+                <List.Item title="删除" onPress={()=>{
+                    setVisible(false)
+                    onDelete()
+                }} />
                 <List.Item title="编辑" onPress={handleEdit} />
                 <List.Item title="分享" onPress={handleShare} />
             </View>

@@ -33,48 +33,12 @@ export default function Header({backgroundColor,onLogout, ...props}) {
     setVisible(!visible);
   };
 
-  const createTable = async () => {
-    await executeSql(
-      db,
-      `
-        create table if not exists records (
-          id text primary key not null, 
-          tag_id text,
-          title text,
-          acount text,
-          userName text,
-          password text,
-          url text,
-          desc text,
-          create_date text,
-          update_date text
-        );
-      `,
-    );
-    console.log('创建成功');
-    setVisible(!visible);
-  };
   const deleteTagTable = async () => {
     await executeSql(db, 'drop table tags');
     console.log('删除成功');
     setVisible(!visible);
   };
 
-  const createTagTable = async () => {
-    await executeSql(
-      db,
-      `
-        create table if not exists tags (
-          id text primary key not null, 
-          text text,
-          create_date text,
-          update_date text
-        );
-      `,
-    );
-    console.log('创建成功');
-    setVisible(!visible);
-  };
   const alterRecordsTable = async ()=>{
     await executeSql(
       db,
@@ -113,9 +77,7 @@ export default function Header({backgroundColor,onLogout, ...props}) {
             backgroundColor: '#fff',
             borderRadius: 6,
           }}>
-          <List.Item title="创建记录表" onPress={createTable} />
           <List.Item title="删除记录表" onPress={deleteTable} />
-          <List.Item title="创建标签表" onPress={createTagTable} />
           <List.Item title="删除标签表" onPress={deleteTagTable} />
           <List.Item title="退出" onPress={onLogout} />
           <List.Item title="修改记录表" onPress={alterRecordsTable} />

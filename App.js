@@ -8,6 +8,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import {activateKeepAwakeAsync} from 'expo-keep-awake'
 import { useConfig } from './src/hooks';
 import { preventScreenCaptureAsync,allowScreenCaptureAsync } from 'expo-screen-capture'
+import initDataBase from './initDataBase';
 
 import Main from './src/pages/Main';
 import RecordAdd from './src/pages/RecordAdd';
@@ -61,6 +62,7 @@ const routes = [
     }
   },
 ]
+
 function App() {
   const [appCofnig,setConfig] = useConfig()
   // const navigationRef = useNavigationContainerRef()
@@ -85,6 +87,9 @@ function App() {
     //   })
     // }
   })
+  useEffect(()=>{
+    initDataBase()
+  },[])
   
   return (
     <NavigationContainer 

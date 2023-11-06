@@ -1,4 +1,4 @@
-
+import CryptoJS from 'crypto-js'
 
 export function executeSql(db,sql,params=[]){
   return new Promise((resolve,reject)=>{
@@ -27,3 +27,16 @@ export function generateRandomPassword(length = 8,hasSpecial=false) {
   }
   return password;
 }
+
+// 密码加密
+export function encryptPassword(password, key) {
+  var encrypted = CryptoJS.AES.encrypt(password, key);
+  return encrypted.toString();
+}
+
+// 密码解密
+export function decryptPassword(encryptedPassword, key) {
+  var decrypted = CryptoJS.AES.decrypt(encryptedPassword, key);
+  return decrypted.toString(CryptoJS.enc.Utf8);
+}
+

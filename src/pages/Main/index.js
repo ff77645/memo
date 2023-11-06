@@ -33,39 +33,6 @@ const fixedScreens =[
             },
         },
     },
-    {
-        name:'回收站',
-        component:Feed,
-        options:{
-            title:'util',
-            drawerLabel:'回收站',
-            drawerIcon({focused,color,size}){
-                return (<Icon name="trash-outline" color={color} size={size} />)
-            },
-        },
-    },
-    // {
-    //     name:'编辑标签',
-    //     component:Redirect,
-    //     options:{
-    //         title:'system',
-    //         drawerLabel:'编辑标签',
-    //         drawerIcon({focused,color,size}){
-    //             return (<Icon name="create-outline" color={color} size={size} />)
-    //         },
-    //     },
-    // },
-    // {
-    //     name:'设置',
-    //     component:Article,
-    //     options:{
-    //         title:'system',
-    //         drawerLabel:'设置',
-    //         drawerIcon({focused,color,size}){
-    //             return (<Icon name="settings-outline" color={color} size={size} />)
-    //         },
-    //     },
-    // },
 ]
 
 const db = openDatabase(dbName)
@@ -141,16 +108,20 @@ export default function Main({navigation}) {
                     },
                 })}
             />
-            {
-                fixedScreens.map((item,index)=>(
-                    <Drawer.Screen
-                        key={index}
-                        name={item.name}
-                        component={item.component}
-                        options={item.options}
-                    />
-                ))
-            }
+             <Drawer.Screen
+                name="回收站"
+                initialParams={{
+                    tag_id:'1',
+                }}
+                component={Record}
+                options={{
+                    drawerIcon({focused,color,size}){
+                        return (<Icon name="trash-outline" color={color} size={size} />)
+                    },
+                    title:'util',
+                    drawerLabel:'回收站',
+                }}
+            />
             <Drawer.Screen
                 name="设置"
                 component={Empty}
