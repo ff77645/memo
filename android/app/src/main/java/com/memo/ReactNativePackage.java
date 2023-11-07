@@ -27,6 +27,7 @@ public class ReactNativePackage implements ReactPackage {
 
     modules.add(new ToastModule(reactContext));
     modules.add(new Clipboarder(reactContext));
+    modules.add(new ExitApp(reactContext));
 
     return modules;
   }

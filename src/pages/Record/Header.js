@@ -77,10 +77,10 @@ export default function Header({backgroundColor,onLogout, ...props}) {
             backgroundColor: '#fff',
             borderRadius: 6,
           }}>
-          <List.Item title="删除记录表" onPress={deleteTable} />
-          <List.Item title="删除标签表" onPress={deleteTagTable} />
+          {/* <List.Item title="删除记录表" onPress={deleteTable} />
+          <List.Item title="删除标签表" onPress={deleteTagTable} /> */}
           <List.Item title="退出" onPress={onLogout} />
-          <List.Item title="修改记录表" onPress={alterRecordsTable} />
+          {/* <List.Item title="修改记录表" onPress={alterRecordsTable} /> */}
         </View>
       </ModalAction>
     </>

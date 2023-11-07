@@ -31,7 +31,7 @@ export default function Header({
     return (
         <BaseHeader backgroundColor={backgroundColor}>
             {
-                type === 'preview' ? <Preview {...props} /> : <EditView {...props} />
+                type !== 'edit' ? <Preview {...props} type={type} /> : <EditView {...props} />
             }
         </BaseHeader>
     )
@@ -40,9 +40,11 @@ export default function Header({
 function Preview({
     title,
     goBack,
+    type,
     onSave,
     onSetType,
     onDelete,
+    onRestore,
 }){
     const [visible, setVisible] = useState(false);
 
@@ -105,13 +107,15 @@ function Preview({
                     borderRadius:6,
                 }}
             >
-                <List.Item title="清除历史记录" />
-                <List.Item title="删除" onPress={()=>{
+                {/* <List.Item title="清除历史记录" /> */}
+                <List.Item title="分享" onPress={handleShare} />
+                {
+                    type === 'readOnly' ? <List.Item title="恢复" onPress={onRestore} /> : <List.Item title="编辑" onPress={handleEdit} />
+                }
+                 <List.Item title="删除" onPress={()=>{
                     setVisible(false)
                     onDelete()
                 }} />
-                <List.Item title="编辑" onPress={handleEdit} />
-                <List.Item title="分享" onPress={handleShare} />
             </View>
         </ModalAction>
     </>

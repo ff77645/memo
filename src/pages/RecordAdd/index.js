@@ -1,6 +1,7 @@
 import React, {
   useState,
   useEffect,
+  useRef,
 } from "react";
 import {
   View,
@@ -21,6 +22,7 @@ import {
 import { randomUUID } from 'expo-crypto'
 import { generateRandomPassword, encryptPassword, decryptPassword } from '../../utils'
 import { useConfig } from "../../hooks";
+import ModalAuth from "../../components/ModalAuth";
 
 const formDataRaw = {
   title: '',
@@ -42,7 +44,7 @@ const generatePassword = {
   times: 0,
 }
 
-let isVerified = false
+let handleAuthSuccess = ()=>{}
 
 export default function RecordAdd({ navigation, route }) {
   const [formData, setFormData] = useState(formDataRaw)
@@ -51,8 +53,12 @@ export default function RecordAdd({ navigation, route }) {
     if (!route.params || !route.params.id) return false
     return true
   })
-  const [opreationType, setOpreationType] = useState(isDisable ? 'preview' : 'edit')
+  const [opreationType, setOpreationType] = useState(()=>{
+    if(route.params.tag_id === '1') return 'readOnly'
+    return isDisable ? 'preview' : 'edit'
+  })
   const [config] = useConfig()
+  const isVerified = useRef(false)
 
   const goBack = () => {
     navigation.goBack()
@@ -131,18 +137,34 @@ export default function RecordAdd({ navigation, route }) {
   }
 
   const handleDeleteRecord = async () => {
+    if(opreationType === 'preview'){
+      await executeSql(db,
+        `update records set is_delete=? where id = ?`,
+        [1,route.params.id]
+      )
+    }else{
+      await executeSql(db,
+        `delete from records where id = ?`,
+        [route.params.id]
+      )
+    }
+    ToastAndroid.showWithGravity('删除成功', ToastAndroid.SHORT, ToastAndroid.CENTER)
+    navigation.goBack()
+  }
+
+  const onRestore = async ()=>{
     await executeSql(db,
       `update records set is_delete=? where id = ?`,
-      [1,route.params.id]
+      [0,route.params.id]
     )
-    ToastAndroid.showWithGravity('删除成功', ToastAndroid.SHORT, ToastAndroid.CENTER)
+    ToastAndroid.showWithGravity('恢复成功', ToastAndroid.SHORT, ToastAndroid.CENTER)
     navigation.goBack()
   }
 
   const deletePrompt = ()=>{
     Alert.alert(
       "删除记录",
-      "确认删除当前记录吗?",
+      `确认${opreationType === 'readOnly' ? '永久' : ''}删除当前记录吗?`,
       [
         {
           text:'取消',
@@ -171,26 +193,46 @@ export default function RecordAdd({ navigation, route }) {
   }, [])
 
   const [showPassword, setShowpassword] = useState(false)
-
+  const [showModalAuth,setShowModalAuth] = useState(false)
   const onToggleVisible = async () => {
-    if (isVerified || showPassword) return setShowpassword(!showPassword)
-    const { success } = await authenticateAsync({promptMessage:'验证'})
-    if (!success) return
-    isVerified = true
-    setShowpassword(!showPassword)
+    if (isVerified.current || showPassword) return setShowpassword(!showPassword)
+    // const { success } = await authenticateAsync({promptMessage:'验证'})
+    // if (!success) return
+    // isVerified.current = true
+    setShowModalAuth(true)
+    handleAuthSuccess = ()=>{
+      console.log('123456');
+      setShowpassword(!showPassword)
+    }
   }
   const handleCopy = async () => {
-    if(isDisable && !isVerified){
-      const { success } = await authenticateAsync({promptMessage:'验证'})
-      if (!success) return
-      isVerified = true
+    if(isDisable && !isVerified.current){
+      // const { success } = await authenticateAsync({promptMessage:'验证'})
+      // if (!success) return
+      // isVerified.current = true
+      setShowModalAuth(true)
+      handleAuthSuccess = async ()=>{
+        await setStringAsync(formData.password)
+        ToastAndroid.show('复制成功', ToastAndroid.SHORT)
+      }
+      return
     }
     await setStringAsync(formData.password)
     ToastAndroid.show('复制成功', ToastAndroid.SHORT)
   }
 
+  const authSuccess = ()=>{
+    isVerified.current = true
+    setShowModalAuth(false)
+    handleAuthSuccess && handleAuthSuccess()
+  }
   return (
     <View>
+      <ModalAuth 
+        visible={showModalAuth} 
+        onCancle={()=>setShowModalAuth(false)}
+        onSuccess={authSuccess}
+      ></ModalAuth>
       <Header
         goBack={goBack}
         title={formData.title}
@@ -198,6 +240,7 @@ export default function RecordAdd({ navigation, route }) {
         type={opreationType}
         onSetType={changeType}
         onDelete={deletePrompt}
+        onRestore={onRestore}
       ></Header>
       {/* <InputItem onDelete={()=>deleteField('title')} field={formData.title} disable={isDisable}> */}
       <InputItem field={'true'} disable={true}>

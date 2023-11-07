@@ -8,7 +8,7 @@ import RecordAdd from './RecordAdd'
 import {openDatabase} from 'expo-sqlite'
 import {executeSql} from '../../utils'
 import {useFocusEffect} from '@react-navigation/native'
-
+import {ExitApp} from '../../NativeMoudles'
 
 const db = openDatabase('db.db')
 
@@ -17,7 +17,6 @@ export default function Record({navigation,route}){
     const [recordList,setRecordList] = useState([])
     const addRecord = ()=>{
         navigation.navigate('RecordAdd',{
-            type:'edit',
             tag_id:route.params.tag_id,
         })
     }
@@ -41,7 +40,6 @@ export default function Record({navigation,route}){
 
     const clickRecord = item =>{
         navigation.navigate('RecordAdd',{
-            type:'preview',
             id:item.id,
             tag_id:route.params.tag_id,
         })
@@ -53,10 +51,11 @@ export default function Record({navigation,route}){
         }))
     }
     const handleLogout = ()=>{
-        navigation.reset({
-            index:0,
-            routes:[{name:'Login'}]
-        })
+        // navigation.reset({
+        //     index:0,
+        //     routes:[{name:'Login'}]
+        // })
+        ExitApp.exitApp()
     }
 
     return (
@@ -85,7 +84,7 @@ export default function Record({navigation,route}){
                         ))
                     }
                 </ScrollView>
-                <RecordAdd onPress={addRecord}></RecordAdd>
+                {route.params.tag_id !== '1' && <RecordAdd onPress={addRecord}></RecordAdd>}
             </View>
         </View>
     )
