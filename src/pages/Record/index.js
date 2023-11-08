@@ -45,7 +45,6 @@ export default function Record({navigation,route}){
         })
     }
     const onSearch = val =>{
-        console.log('onSearch',val);
         setRecordList(dataRaw.filter(item=>{
             return item.title.includes(val) || item.acount.includes(val)
         }))

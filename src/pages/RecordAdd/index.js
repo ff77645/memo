@@ -16,13 +16,13 @@ import { openDatabase } from 'expo-sqlite'
 import { executeSql } from '../../utils'
 import IconButton from "../../components/IconButton";
 import { setStringAsync } from 'expo-clipboard'
-import {
-  authenticateAsync,
-} from 'expo-local-authentication'
 import { randomUUID } from 'expo-crypto'
 import { generateRandomPassword, encryptPassword, decryptPassword } from '../../utils'
 import { useConfig } from "../../hooks";
 import ModalAuth from "../../components/ModalAuth";
+import Share from 'react-native-share'
+// import {shareAsync} from 'expo-sharing'
+// import * as FileSystem from 'expo-file-system'
 
 const formDataRaw = {
   title: '',
@@ -43,8 +43,6 @@ const generatePassword = {
   hasSpecial: false,
   times: 0,
 }
-
-let handleAuthSuccess = ()=>{}
 
 export default function RecordAdd({ navigation, route }) {
   const [formData, setFormData] = useState(formDataRaw)
@@ -179,10 +177,7 @@ export default function RecordAdd({ navigation, route }) {
   }
 
 
-  const changeType = type => {
-    setIsDisable(type === 'preview')
-    setOpreationType(type)
-  }
+  
 
   const deleteField = field => {
     onChangeFormData(field, undefined)
@@ -194,53 +189,80 @@ export default function RecordAdd({ navigation, route }) {
 
   const [showPassword, setShowpassword] = useState(false)
   const [showModalAuth,setShowModalAuth] = useState(false)
+  const [authAction,setAuthAction] = useState('')
   const onToggleVisible = async () => {
     if (isVerified.current || showPassword) return setShowpassword(!showPassword)
-    // const { success } = await authenticateAsync({promptMessage:'验证'})
-    // if (!success) return
-    // isVerified.current = true
     setShowModalAuth(true)
-    handleAuthSuccess = ()=>{
-      console.log('123456');
-      setShowpassword(!showPassword)
-    }
+    setAuthAction('showPassword')
   }
   const handleCopy = async () => {
     if(isDisable && !isVerified.current){
-      // const { success } = await authenticateAsync({promptMessage:'验证'})
-      // if (!success) return
-      // isVerified.current = true
       setShowModalAuth(true)
-      handleAuthSuccess = async ()=>{
-        await setStringAsync(formData.password)
-        ToastAndroid.show('复制成功', ToastAndroid.SHORT)
-      }
+      setAuthAction('copyPassword')
       return
     }
     await setStringAsync(formData.password)
     ToastAndroid.show('复制成功', ToastAndroid.SHORT)
   }
 
-  const authSuccess = ()=>{
+  const onEdit = () => {
+    if(isVerified.current){
+      setIsDisable(false)
+      setOpreationType('edit')
+    }else{
+      setAuthAction('edit')
+      setShowModalAuth(true)
+    }
+  }
+
+  const onAuthSuccess = async ()=>{
     isVerified.current = true
     setShowModalAuth(false)
-    handleAuthSuccess && handleAuthSuccess()
+    if(authAction === 'showPassword'){
+      setShowpassword(!showPassword)
+    }else if(authAction === 'copyPassword'){
+      await setStringAsync(formData.password)
+      ToastAndroid.show('复制成功', ToastAndroid.SHORT)
+    }else if(authAction === 'edit'){
+      setIsDisable(false)
+      setOpreationType('edit')
+    }
   }
+
+  const onShare =  ()=>{
+    let str = ``
+    str += `标题:${formData.title} \n\t`
+    str += `账户:${formData.acount} \n\t`
+    str += `用户名:${formData.userName} \n\t`
+    str += `密码:${formData.password} \n\t`
+    str += `网址:${formData.url} \n\t`
+    str += `描述:${formData.desc} \n\t`
+    Share.open({
+      url:str,
+    })
+    .then(res=>{
+      console.log({res});
+    }).catch(err=>{
+      console.log(err);
+    })
+  }
+
   return (
     <View>
       <ModalAuth 
         visible={showModalAuth} 
         onCancle={()=>setShowModalAuth(false)}
-        onSuccess={authSuccess}
+        onSuccess={onAuthSuccess}
       ></ModalAuth>
       <Header
         goBack={goBack}
         title={formData.title}
         onSave={handleSave}
         type={opreationType}
-        onSetType={changeType}
+        onEdit={onEdit}
         onDelete={deletePrompt}
         onRestore={onRestore}
+        onShare={onShare}
       ></Header>
       {/* <InputItem onDelete={()=>deleteField('title')} field={formData.title} disable={isDisable}> */}
       <InputItem field={'true'} disable={true}>

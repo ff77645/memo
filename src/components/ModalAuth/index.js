@@ -18,7 +18,7 @@ export default function ModalAuth({onSuccess,onCancle,usePassword,...props}) {
   const [config] = useConfig()
 
   const onConfirm = ()=>{
-    if(value !== config.password) return setError('密码错误')
+    if(value !== config.password) return setLabel('密码错误')
     onSuccess()
   }
 
@@ -58,6 +58,7 @@ export default function ModalAuth({onSuccess,onCancle,usePassword,...props}) {
         </View>
         <View>
           <TextInput 
+            secureTextEntry
             value={value} 
             error={!!label}
             label={label}

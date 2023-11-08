@@ -45,13 +45,11 @@ function Preview({
     onSetType,
     onDelete,
     onRestore,
+    onShare,
+    onEdit,
 }){
     const [visible, setVisible] = useState(false);
 
-    const handleEdit = ()=>{
-        onSetType('edit')
-    }
-    const handleShare = ()=>{}
     return (
         <>
         <View
@@ -108,9 +106,12 @@ function Preview({
                 }}
             >
                 {/* <List.Item title="清除历史记录" /> */}
-                <List.Item title="分享" onPress={handleShare} />
+                <List.Item title="分享" onPress={()=>{
+                    setVisible(false)
+                    onShare()
+                }} />
                 {
-                    type === 'readOnly' ? <List.Item title="恢复" onPress={onRestore} /> : <List.Item title="编辑" onPress={handleEdit} />
+                    type === 'readOnly' ? <List.Item title="恢复" onPress={onRestore} /> : <List.Item title="编辑" onPress={onEdit} />
                 }
                  <List.Item title="删除" onPress={()=>{
                     setVisible(false)
