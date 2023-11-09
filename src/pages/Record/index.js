@@ -57,6 +57,7 @@ export default function Record({navigation,route}){
         ExitApp.exitApp()
     }
 
+
     return (
         <View
             style={{
