@@ -24,7 +24,7 @@ export default function ModalAuth({onSuccess,onCancle,usePassword,...props}) {
 
   const handleAuth = async ()=>{
     const { success } = await authenticateAsync({promptMessage:'验证'})
-    if (!success) return
+    if (!success) return onCancle()
     onSuccess()
   }
 
