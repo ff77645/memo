@@ -12,23 +12,27 @@ import BaseHeader from "../../components/BaseHeader";
 import { useConfig } from "../../hooks";
 import {getItemAsync} from 'expo-secure-store'
 import { appConfigKey } from "../../config/config";
+import ModalAuth from "../../components/ModalAuth";
 
 export default function Login({ navigation }) {
 
   const [password, setPassword] = useState('')
   const [config,setConfig] = useConfig()
+  const [showModalAuth,setShowModalAuth] = useState(false)
   const verifIsFirstLogin = async ()=>{
-    const config = await getItemAsync(appConfigKey)
-    if(config && JSON.parse(config).password) return
-    navigation.reset({
+    const configJson = await getItemAsync(appConfigKey)
+    const config = configJson && JSON.parse(configJson)
+    if(!config || !config.password) return navigation.reset({
       index:0,
-      routes:[{name:'LoginFirst'}]
-    }) 
+      routes:[{name:'SetRootPassword',params:{action:'setPassword'}}]
+    })
+    if(config.biometrics){
+      setShowModalAuth(true)
+    }
   }
   verifIsFirstLogin()
 
-  const login = val => {
-    if((val || password) !== config.password) return ToastAndroid.show('密码错误',ToastAndroid.SHORT)
+  const loginSuccess = ()=>{
     setConfig({
       ...config,
       loginDate:Date.now(),
@@ -38,20 +42,29 @@ export default function Login({ navigation }) {
       routes:[{name:'Main'}]
     })
   }
+
+  const onConfirm = val => {
+    if((val || password) !== config.password) return ToastAndroid.show('密码错误',ToastAndroid.SHORT)
+    loginSuccess()
+  }
+
   const changePassword = val =>{
-    if(val && config.fastLogin){
-      if(config.password === val) login(val)
-    }
+    if(val && config.fastLogin && config.password === val) onConfirm(val)
     setPassword(val)
   }
-  
+
   return (
     <View
       style={{
         height: '100%',
         display:'flex',
       }}
-    >
+    > 
+      <ModalAuth 
+        visible={showModalAuth} 
+        onCancle={()=>setShowModalAuth(false)}
+        onSuccess={loginSuccess}
+      ></ModalAuth>
       <BaseHeader>
         <View
           style={{
@@ -88,11 +101,10 @@ export default function Login({ navigation }) {
             marginTop:20,
           }}
           >
-            <Button mode="contained" onPress={login}>
+            <Button mode="contained" onPress={onConfirm}>
               登录
             </Button>
           </View>
-
       </View>
     </View>
   )

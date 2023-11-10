@@ -18,9 +18,12 @@ export default function Safe({navigation}){
     setConfig(data)
   }
 
-  useEffect(()=>{
-    console.log({config,setConfig});
-  },[])
+  const changeRootPassword = ()=>{
+    navigation.navigate("SetRootPassword",{
+      action:'resetPassword',
+    })
+  }
+
   return (
     <View
       style={{
@@ -41,7 +44,7 @@ export default function Safe({navigation}){
           <List.Item title="数据库" titleStyle={{
             color:'#c23616',
           }}></List.Item>
-          <List.Item title="更改主密码"></List.Item>
+          {/* <List.Item onPress={changeRootPassword} title="更改主密码"></List.Item> */}
           <List.Item 
             title="快速登陆"
             right={()=><Switch value={config.fastLogin} onValueChange={()=>onChange('fastLogin',!config.fastLogin)} color="#c23616"></Switch>}
@@ -51,7 +54,7 @@ export default function Safe({navigation}){
             description={()=><Text>当在屏幕关闭或在60秒后进入后台时</Text>}
             right={()=><Switch value={config.autoLogout} onValueChange={()=>onChange('autoLogout',!config.autoLogout)} color="#c23616"></Switch>}
           ></List.Item>
-          <List.Item 
+          <List.Item
             title="保持亮屏" 
             description={()=><Text>当浏览或编辑条目时屏幕不进入休眠状态</Text>}
             right={()=><Switch value={config.holdLightUp} onValueChange={()=>onChange('holdLightUp',!config.holdLightUp)} color="#c23616"></Switch>}
@@ -70,14 +73,14 @@ export default function Safe({navigation}){
             title="生物认证" 
             right={()=><Switch value={config.biometrics} onValueChange={()=>onChange('biometrics',!config.biometrics)} color="#c23616"></Switch>}
           ></List.Item>
-          <List.Item 
+          {/* <List.Item 
             title="清除剪切板" 
             description={()=><Text>从不</Text>}
             ></List.Item>
           <List.Item 
             title="密码尝试次数" 
             description={()=><Text>无限次</Text>}
-          ></List.Item>
+          ></List.Item> */}
         </View>
       </View>
     </View>

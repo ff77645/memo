@@ -10,20 +10,18 @@ import {
 } from 'react-native-paper'
 import BaseHeader from "../../components/BaseHeader";
 import { useConfig } from "../../hooks";
+import IconButton from "../../components/IconButton";
 
 
-
-
-
-export default function LoginFirst({ navigation }) {
-
+export default function SetRootPassword({ navigation,route }) {
+  const [oldPassword, setOldPassword] = useState('')
   const [password, setPassword] = useState('')
   const [passwordConfirm, setPasswordConfirm] = useState('')
-
   const [config,setConfig] = useConfig()
-  const onConfirm = () => {
-    if(!password) return
-    if(password !== passwordConfirm) return ToastAndroid.show('两次密码不一致',ToastAndroid.SHORT)
+  const {action} = route.params
+  const isReset = action === 'resetPassword'
+
+  const handleSet = ()=>{
     setConfig({
       ...config,
       loginDate:Date.now(),
@@ -34,6 +32,17 @@ export default function LoginFirst({ navigation }) {
       routes:[{name:'Main'}]
     })
   }
+
+  const handleReset = ()=>{
+
+  }
+
+  const onConfirm = () => {
+    if(!password) return
+    if(password !== passwordConfirm) return ToastAndroid.show('两次密码不一致',ToastAndroid.SHORT)
+    isReset ? handleReset() : handleSet()
+  }
+
   return (
     <View
       style={{
@@ -48,12 +57,16 @@ export default function LoginFirst({ navigation }) {
             display:'flex',
             flexDirection:'row',
             paddingHorizontal:20,
+            gap:10,
           }}
         >
+          {
+            isReset && <IconButton onPress={()=>navigation.goBack()} name="arrow-back-outline" size={26} color="#fff"></IconButton>
+          }
           <Text style={{
             fontSize: 24,
             color:'#fff',
-          }}>设置主密码</Text>
+          }}>{isReset ? "修改" : "设置"}主密码</Text>
         </View>
       </BaseHeader>
       <View
@@ -62,21 +75,36 @@ export default function LoginFirst({ navigation }) {
           flex:1,
           paddingTop:50,
         }}
-      >
+      >   
+          {
+            isReset && <TextInput
+                style={{
+                  marginBottom:10,
+                }}
+                mode='outlined'
+                secureTextEntry
+                label='原密码'
+                value={oldPassword}
+                onChangeText={setOldPassword}
+              ></TextInput>
+          }
           <TextInput
+            style={{
+              marginBottom:10,
+            }}
             mode='outlined'
-            secureTextEntry={true}
-            label='主密码'
+            secureTextEntry
+            label={isReset ? '新密码' : '主密码'}
             value={password}
             onChangeText={setPassword}
           ></TextInput>
           <TextInput
             style={{
-              marginTop:10,
+              marginBottom:10,
             }}
             mode='outlined'
-            secureTextEntry={true}
-            label='确认主密码'
+            secureTextEntry
+            label={isReset ? '确认新密码' : '确认主密码'}
             value={passwordConfirm}
             onChangeText={setPasswordConfirm}
           ></TextInput>

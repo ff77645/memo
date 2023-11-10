@@ -15,7 +15,7 @@ import RecordAdd from './src/pages/RecordAdd';
 import TagManage from './src/pages/TagManage';
 import Setting from './src/pages/Setting';
 import Login from './src/pages/Login';
-import LoginFirst from './src/pages/LoginFirst';
+import SetRootPassword from './src/pages/SetRootPassword';
 
 const RootStack = createNativeStackNavigator()
 const routes = [
@@ -27,8 +27,8 @@ const routes = [
     }
   },
   {
-    name: 'LoginFirst',
-    component: LoginFirst,
+    name: 'SetRootPassword',
+    component: SetRootPassword,
     options: {
       headerShown: false
     }
