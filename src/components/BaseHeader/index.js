@@ -7,7 +7,7 @@ import {
 
 export default function BaseHeader({
   children,
-  backgroundColor='#0984e3',
+  backgroundColor='#1e90ff',
 }) {
   return (
     <View

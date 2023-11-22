@@ -1,5 +1,5 @@
 import React,{
-    useCallback, useState,
+    useCallback, useContext, useState,
 } from "react";
 import { ScrollView, View } from "react-native";
 import Header from "./Header";
@@ -9,12 +9,14 @@ import {openDatabase} from 'expo-sqlite'
 import {executeSql} from '../../utils'
 import {useFocusEffect} from '@react-navigation/native'
 import {ExitApp} from '../../NativeMoudles'
+import { ThemeContext } from "../../components/ThemeContextProvider";
 
 const db = openDatabase('db.db')
 
 let dataRaw = []
 export default function Record({navigation,route}){
     const [recordList,setRecordList] = useState([])
+    const {color} = useContext(ThemeContext)
     const addRecord = ()=>{
         navigation.navigate('RecordAdd',{
             tag_id:route.params.tag_id,
@@ -70,11 +72,13 @@ export default function Record({navigation,route}){
                 openDrawer={navigation.openDrawer}
                 onSearch={onSearch}
                 onLogout={handleLogout}
+                backgroundColor={color.primary}
             ></Header>
             <View
                 style={{
                     flex:1,
                     position:'relative',
+                    backgroundColor:color.bgColor1,
                 }}
             >
                 <ScrollView>
@@ -84,7 +88,7 @@ export default function Record({navigation,route}){
                         ))
                     }
                 </ScrollView>
-                {route.params.tag_id !== '1' && <RecordAdd onPress={addRecord}></RecordAdd>}
+                {route.params.tag_id !== '1' && <RecordAdd color={color.primary} onPress={addRecord}></RecordAdd>}
             </View>
         </View>
     )

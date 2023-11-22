@@ -54,6 +54,9 @@ export default function Main({navigation}) {
             screenOptions={{
                 headerShown: false,
                 drawerType:'back',
+                // drawerStyle:{
+                //     backgroundColor:'#000',
+                // },
             }}
             drawerContent={DrawerContent}
         >

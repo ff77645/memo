@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState,useContext} from 'react';
 import {Text, View, TextInput} from 'react-native';
 import BaseHeader from '../../components/BaseHeader';
 import {List} from 'react-native-paper';
@@ -6,6 +6,7 @@ import {openDatabase} from 'expo-sqlite';
 import {executeSql} from '../../utils';
 import ModalAction from '../../components/ModalAction';
 import IconButton from '../../components/IconButton';
+import { ThemeContext } from '../../components/ThemeContextProvider';
 
 const db = openDatabase('db.db');
 
@@ -23,6 +24,7 @@ const fontStyle = {
 export default function Header({backgroundColor,onLogout, ...props}) {
   const [visible, setVisible] = useState(false);
   const [isSearch, setIsSearch] = useState(false);
+  const {color} = useContext(ThemeContext)
   const handleOption = () => {
     setVisible(!visible);
   };
@@ -74,12 +76,12 @@ export default function Header({backgroundColor,onLogout, ...props}) {
             right: 0,
             top: 0,
             padding: 10,
-            backgroundColor: '#fff',
+            backgroundColor: color.bgColor1,
             borderRadius: 6,
           }}>
           {/* <List.Item title="删除记录表" onPress={deleteTable} />
           <List.Item title="删除标签表" onPress={deleteTagTable} /> */}
-          <List.Item title="退出" onPress={onLogout} />
+          <List.Item titleStyle={{color:color.color1}} title="退出" onPress={onLogout} />
           {/* <List.Item title="修改记录表" onPress={alterRecordsTable} /> */}
         </View>
       </ModalAction>

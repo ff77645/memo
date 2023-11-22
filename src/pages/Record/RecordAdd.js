@@ -7,7 +7,7 @@ import Icon from 'react-native-vector-icons/Ionicons'
 import { ToastExample,ClipboardOwn } from "../../NativeMoudles";
 
 
-export default function RecordAdd({onPress}){
+export default function RecordAdd({onPress,color}){
   const showToast = ()=>{
     // ToastExample.show('Awesome', ToastExample.SHORT);
     ClipboardOwn.setString("Hellow world;")
@@ -23,7 +23,7 @@ export default function RecordAdd({onPress}){
           bottom:20,
         }}
       >
-        <Icon name="add-circle" color="#0984e3" size={68} />
+        <Icon name="add-circle" color={color} size={68} />
       </View>
     </TouchableWithoutFeedback>
   )

@@ -9,6 +9,7 @@ import {activateKeepAwakeAsync} from 'expo-keep-awake'
 import { useConfig } from './src/hooks';
 import { preventScreenCaptureAsync,allowScreenCaptureAsync } from 'expo-screen-capture'
 import initDataBase from './initDataBase';
+import ThemeContextProvider from './src/components/ThemeContextProvider'
 
 import Main from './src/pages/Main';
 import RecordAdd from './src/pages/RecordAdd';
@@ -92,24 +93,26 @@ function App() {
   },[])
   
   return (
-    <NavigationContainer 
-      // ref={navigationRef}
-    >
-      <RootStack.Navigator
-        initialRouteName="Login"
+    <ThemeContextProvider>
+      <NavigationContainer 
+        // ref={navigationRef}
       >
-        {
-          routes.map(route => (
-            <RootStack.Screen
-              name={route.name}
-              component={route.component}
-              options={route.options}
-              key={route.name}
-            />
-          ))
-        }
-      </RootStack.Navigator>
-    </NavigationContainer>
+        <RootStack.Navigator
+          initialRouteName="Login"
+        >
+          {
+            routes.map(route => (
+              <RootStack.Screen
+                name={route.name}
+                component={route.component}
+                options={route.options}
+                key={route.name}
+              />
+            ))
+          }
+        </RootStack.Navigator>
+      </NavigationContainer>
+    </ThemeContextProvider>
   );
 }
 
