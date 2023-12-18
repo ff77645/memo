@@ -19,7 +19,3 @@
 
 
 
-![首页](https://files.summer9.cn/images/s1.jpg)
-![侧边](https://files.summer9.cn/images/s2.jpg)
-![设置](https://files.summer9.cn/images/s3.jpg)
-![数据](https://files.summer9.cn/images/s4.jpg)
